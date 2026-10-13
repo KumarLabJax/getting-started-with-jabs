@@ -1,5 +1,8 @@
 """Prepare the training pool: the full Zenodo grooming set without the held-out session, features cached.
 
+For instructors who rebuild the fallback classifier (developer/scripts/make_pretrained_classifier.py).
+Students never need it: the launchers build only the 10-session practice set.
+
 `download_zenodo.py` extracts the deposit to data/zenodo/jabs_grooming/ and leaves it as downloaded.
 This script makes data/zenodo_no_gt_cached/jabs_grooming/ from it:
 
@@ -26,7 +29,8 @@ import os
 import shutil
 import subprocess
 import sys
-from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures import ProcessPoolExecutor, as_completed
+from concurrent.futures.process import BrokenProcessPool
 from pathlib import Path
 
 REPO = Path(__file__).parent.parent
@@ -36,6 +40,7 @@ HELD_OUT = {"2010"}  # the dense ground-truth session the notebook evaluates on
 POSE_SUFFIX = "_pose_est_v6.h5"
 BEHAVIOR = "grooming"
 WINDOW_SIZE = 60  # frames before and after the current frame
+FEATURES_MARKER = ".course_features.json"  # written in jabs/features/ once every video is cached
 CV_GROUPING = "Video"  # JABS "Cross Validation grouping": hold out whole videos
 # JABS-generated folders that are not copied from the download (they are rebuilt here).
 NOT_COPIED = ("features", "cache", "classifiers", "predictions", "training_logs", "archive", "session")
@@ -162,23 +167,57 @@ def cache_behavior_features(project: Path) -> bool:
         them on first Train instead).
     """
     stems = sorted(f.name.removesuffix(POSE_SUFFIX) for f in project.glob(f"*{POSE_SUFFIX}"))
-    ok = True
-    with ProcessPoolExecutor(max_workers=max(1, min(len(stems), (os.cpu_count() or 2) - 1))) as pool:
-        futures = {pool.submit(_cache_one_video, (str(project), stem)): stem for stem in stems}
-        for future, stem in futures.items():
+    proj = json.loads((project / "jabs" / "project.json").read_text(encoding="utf-8"))
+    expected = {"behavior": BEHAVIOR, "settings": proj["behavior"][BEHAVIOR], "videos": stems}
+    marker = project / "jabs" / "features" / FEATURES_MARKER
+    if marker.exists():
+        try:
+            done_before = json.loads(marker.read_text(encoding="utf-8"))
+        except ValueError:
+            done_before = None
+        if done_before == expected and all((project / "jabs" / "features" / s).is_dir() for s in stems):
+            print(f"  features already cached for {len(stems)} videos", flush=True)
+            return True
+
+    # A few workers is plenty: each one holds a pose file and a video's features in memory, and a
+    # small or busy machine (a course VM) is slower with many.
+    workers = max(1, min(len(stems), (os.cpu_count() or 2) - 1, 4))
+    print(f"  caching features for {len(stems)} videos with {workers} worker(s); a few minutes the first time ...", flush=True)
+    ok, finished = True, 0
+    try:
+        with ProcessPoolExecutor(max_workers=workers) as pool:
+            futures = {pool.submit(_cache_one_video, (str(project), stem)): stem for stem in stems}
+            for future in as_completed(futures):
+                try:
+                    future.result()
+                    finished += 1
+                    print(f"    {finished}/{len(stems)} {futures[future]}", flush=True)
+                except BrokenProcessPool:
+                    raise
+                except Exception as err:  # one bad video must not stop the others
+                    ok = False
+                    print(f"  features for {futures[future]} failed ({err}); JABS will compute them on first Train.", flush=True)
+    except BrokenProcessPool:
+        print("  worker processes stopped; caching one video at a time instead ...", flush=True)
+        ok, finished = True, 0
+        for stem in stems:
             try:
-                future.result()
-            except Exception as err:  # one bad video must not stop the others
+                _cache_one_video((str(project), stem))
+                finished += 1
+                print(f"    {finished}/{len(stems)} {stem}", flush=True)
+            except Exception as err:
                 ok = False
-                print(f"  features for {stem} failed ({err}); JABS will compute them on first Train.")
+                print(f"  features for {stem} failed ({err}); JABS will compute them on first Train.", flush=True)
+    if ok:
+        marker.parent.mkdir(parents=True, exist_ok=True)
+        marker.write_text(json.dumps(expected, sort_keys=True), encoding="utf-8")
     return ok
 
 
 def cache_features(project: Path) -> bool:
     """Configure the project, initialize it with `jabs-init`, and cache all features for grooming.
 
-    Features already cached with the right settings are read, not recomputed, so this is quick on
-    later runs.
+    Once every video is cached, a marker file records it and later runs return immediately.
 
     Args:
         project: A JABS project directory.

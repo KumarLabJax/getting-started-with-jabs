@@ -4,14 +4,16 @@ Called by the one-click launchers (start_jabs.ps1 / start_jabs.sh); safe to run 
 re-run. It does, in order:
 
     1. Downloads and extracts the Zenodo grooming dataset into data/zenodo/ if it is not there
-       (download_zenodo.py).
-    2. Prepares the training pool, data/zenodo_no_gt_cached/: the download without the held-out
-       session 2010, with features cached by jabs-init (prepare_training_set.py).
-    3. Builds the practice set, data/zenodo_scrubbed/, if it is missing or still holds session
+       (download_zenodo.py). If the data was copied onto the machine as the instructors' training
+       pool (data/zenodo_no_gt_cached/) instead, that is used and nothing is downloaded.
+    2. Builds the practice set, data/zenodo_scrubbed/, if it is missing or still holds session
        2010 (make_scrubbed_practice_set.py). An existing practice set is never rebuilt, because
        a rebuild would overwrite the labels a student has made in the GUI.
-    4. Runs jabs-init on the practice set, so every session's features are cached before the
-       JABS GUI opens. Features already cached are skipped, so this is quick on later runs.
+    3. Initializes the practice set with jabs-init and caches its 10 sessions' features the way
+       the GUI asks for them, so the first Train does not stall. Once cached, later runs skip it.
+
+The training pool (data/zenodo_no_gt_cached/, all 24 sessions) is for instructors who rebuild the
+fallback classifier; students never need it, so this script does not touch it.
 
 Usage:
     python student_scripts/prepare_course_data.py
@@ -26,7 +28,7 @@ from pathlib import Path
 
 from make_scrubbed_practice_set import DEFAULT_OUTPUT, POSE_SUFFIX
 from make_scrubbed_practice_set import main as build_practice_set
-from prepare_training_set import HELD_OUT, SOURCE, cache_features, prepare
+from prepare_training_set import HELD_OUT, SOURCE, TRAINING_SET, cache_features
 
 HERE = Path(__file__).parent
 PRACTICE_SET = DEFAULT_OUTPUT / "jabs_grooming"
@@ -54,12 +56,12 @@ def download() -> bool:
 
 
 def main() -> int:
-    """Run the four steps above.
+    """Run the steps above.
 
     Returns:
         0 if the practice set is ready, 1 if the download or a build step failed.
     """
-    if not have_pose(SOURCE) and not download():
+    if not have_pose(SOURCE) and not have_pose(TRAINING_SET) and not download():
         print("[WARN] Data download failed. Continuing with the bundled toy data; rerun to retry.")
         return 1
 
@@ -71,9 +73,8 @@ def main() -> int:
             print("[INFO] Building the practice set (this also caches features) ...")
             build_practice_set()
         else:
-            prepare()                      # training pool: keeps what is there, caches missing features
-            print("[INFO] Caching features for the practice set ...")
-            cache_features(PRACTICE_SET)   # jabs-init skips features that already exist
+            print("[INFO] Checking cached features for the practice set ...", flush=True)
+            cache_features(PRACTICE_SET)   # returns at once when they are all cached
     except (SystemExit, Exception) as err:  # a build problem must not stop the launcher
         print(f"[WARN] Practice-set build failed ({err}).")
         return 1
