@@ -106,17 +106,16 @@ jobs:
           assert (Path("data/dense_gt_a1/jabs/annotations/2010.json")).exists()
           print("practice set OK:", len(poses), "sessions,", len(anns), "labelled")
 
-          # Features are cached by jabs-init at build time, in the practice set and in the training pool.
+          # Features are cached at build time, the way the GUI asks for them, so the first Train does not stall.
           import h5py
 
-          pool = Path("data/zenodo_no_gt_cached/jabs_grooming")
-          assert not (pool / "2010_pose_est_v6.h5").exists(), "held-out session 2010 leaked into the training pool"
-          for folder, n in ((d, 10), (pool, 24)):
-              feats = sorted((folder / "jabs" / "features").glob("*/0/features.h5"))
-              assert len(feats) == n, f"{folder}: expected features for {n} sessions, found {len(feats)}"
-              with h5py.File(feats[0], "r") as f:
-                  assert "window_features_60" in f["features"], f"{folder}: no window-60 features cached"
-          print("features cached: practice set 10 sessions, training pool 24 sessions")
+          feats = sorted((d / "jabs" / "features").glob("*/0/features.h5"))
+          assert len(feats) == 10, f"expected features for 10 sessions, found {len(feats)}"
+          with h5py.File(feats[0], "r") as f:
+              assert "window_features_60" in f["features"], "no window-60 features cached"
+          assert (d / "jabs" / "features" / ".course_features.json").exists(), "feature cache marker missing"
+          assert not Path("data/zenodo_no_gt_cached").exists(), "the launcher must not build the instructors' training pool"
+          print("features cached for the 10 practice sessions")
           EOF
 
       - name: The practice set is identical on a second build

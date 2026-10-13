@@ -4,7 +4,7 @@
 
 - Python 3.10–3.12
 - ~2 GB disk space for toy data and dependencies
-- ~4 GB disk space for the Zenodo `jabs_grooming` download, the training pool (features cached) and the practice set derived from it (optional beyond toy data)
+- ~1.5 GB disk space for the Zenodo `jabs_grooming` download and the practice set with its cached features (optional beyond toy data)
 - ~50 GB disk space for the full Harvard Dataverse dataset (optional deep dive)
 
 ## Connecting to a remote course computer
@@ -65,9 +65,10 @@ This downloads into `data/zenodo/jabs_grooming/`. Files already present are skip
 
 The one-click launchers (`start_jabs`) do all of this for you through
 `python student_scripts/prepare_course_data.py`, which you can also run by hand. It downloads the data
-if it is missing, makes `data/zenodo_no_gt_cached/jabs_grooming/` from it (every session except the
-held-out test session, 2010), builds the practice set in `data/zenodo_scrubbed/` if it does not exist,
-and runs `jabs-init` so features are cached before the JABS GUI opens. An existing practice set is
+if it is missing, builds the practice set in `data/zenodo_scrubbed/` if it does not exist (10 sessions;
+the held-out test session, 2010, is never in it), and runs `jabs-init` so features are cached before the
+JABS GUI opens. Instructors who rebuild the fallback classifier use `student_scripts/prepare_training_set.py`
+instead, which makes `data/zenodo_no_gt_cached/` (all sessions but 2010). An existing practice set is
 never rebuilt, so labels you made are kept. None of these folders are committed.
 See `config/zenodo/annotation_sets.yaml` for what's selected.
 

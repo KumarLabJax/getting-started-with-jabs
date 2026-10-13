@@ -59,8 +59,7 @@ and order live in `developer/scripts/site_manifest.json` and `build_site_nav.py`
 
 The launchers in `student_scripts/` do everything: create `.venv`, install requirements, and run
 `student_scripts/prepare_course_data.py`, which downloads the Zenodo grooming dataset (~110 MB, once),
-prepares a training pool without the held-out session (`data/zenodo_no_gt_cached/`), builds the
-practice set under `data/zenodo_scrubbed/` (the 10 shortest of the 25 Zenodo videos; about half keep
+builds the practice set under `data/zenodo_scrubbed/` (the 10 shortest of the 25 Zenodo videos; about half keep
 their original labels, the rest are unlabeled for hands-on labeling) and caches features with
 `jabs-init`, so the first Train in the GUI does not stall. Then they open the JABS GUI and the demo
 notebook in JupyterLab. Each step is skipped if it is already done, and an existing practice set is

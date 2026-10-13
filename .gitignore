@@ -109,3 +109,6 @@ htmlcov/
 # (student_scripts/prepare_training_set.py); the training pool for the pretrained classifier and
 # the practice set. Only the results in data/pretrained/ are committed.
 data/zenodo_no_gt_cached/
+
+# archives of data folders made for moving them between machines
+data/*.zip
