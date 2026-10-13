@@ -1,0 +1,15 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.4.0
+    hooks:
+      - id: ruff
+        args: [--fix]
+  - repo: https://github.com/kynan/nbstripout
+    rev: 0.7.1
+    hooks:
+      - id: nbstripout
+        # Strip outputs from the live demo before committing: students run it fresh, and the
+        # outputs hold local paths. The static-page notebooks (static_build_notebooks/) and the
+        # deep dives are committed WITH outputs on purpose: publish_site.py refuses to build a
+        # notebook that has code cells but no saved outputs.
+        files: ^student_notebooks/live_demo/

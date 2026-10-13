@@ -1,0 +1,152 @@
+{
+  "version": 1,
+  "file": "2010.avi",
+  "num_frames": 1491,
+  "labels": {
+    "0": {
+      "grooming": [
+        {
+          "start": 0,
+          "end": 86,
+          "present": true
+        },
+        {
+          "start": 87,
+          "end": 450,
+          "present": false
+        },
+        {
+          "start": 451,
+          "end": 563,
+          "present": true
+        },
+        {
+          "start": 564,
+          "end": 613,
+          "present": false
+        },
+        {
+          "start": 614,
+          "end": 685,
+          "present": true
+        },
+        {
+          "start": 686,
+          "end": 700,
+          "present": false
+        },
+        {
+          "start": 701,
+          "end": 737,
+          "present": true
+        },
+        {
+          "start": 738,
+          "end": 815,
+          "present": false
+        },
+        {
+          "start": 816,
+          "end": 1158,
+          "present": true
+        },
+        {
+          "start": 1159,
+          "end": 1199,
+          "present": false
+        },
+        {
+          "start": 1200,
+          "end": 1367,
+          "present": true
+        },
+        {
+          "start": 1368,
+          "end": 1430,
+          "present": false
+        },
+        {
+          "start": 1431,
+          "end": 1490,
+          "present": true
+        }
+      ]
+    }
+  },
+  "unfragmented_labels": {
+    "0": {
+      "grooming": [
+        {
+          "start": 0,
+          "end": 86,
+          "present": true
+        },
+        {
+          "start": 87,
+          "end": 450,
+          "present": false
+        },
+        {
+          "start": 451,
+          "end": 563,
+          "present": true
+        },
+        {
+          "start": 564,
+          "end": 613,
+          "present": false
+        },
+        {
+          "start": 614,
+          "end": 685,
+          "present": true
+        },
+        {
+          "start": 686,
+          "end": 700,
+          "present": false
+        },
+        {
+          "start": 701,
+          "end": 737,
+          "present": true
+        },
+        {
+          "start": 738,
+          "end": 815,
+          "present": false
+        },
+        {
+          "start": 816,
+          "end": 1158,
+          "present": true
+        },
+        {
+          "start": 1159,
+          "end": 1199,
+          "present": false
+        },
+        {
+          "start": 1200,
+          "end": 1367,
+          "present": true
+        },
+        {
+          "start": 1368,
+          "end": 1430,
+          "present": false
+        },
+        {
+          "start": 1431,
+          "end": 1490,
+          "present": true
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "project": {},
+    "video": {}
+  },
+  "labeler": "razam"
+}

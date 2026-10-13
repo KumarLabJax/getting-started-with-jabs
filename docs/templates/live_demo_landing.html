@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JABS Demo - Getting Started with JABS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="_shared/design-system.css">
+</head>
+<body>
+
+<div class="page">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <span class="sidebar-brand sidebar-label">From Pose to Behavior: A Hands-On Introduction to JABS</span>
+      <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">&lsaquo;</button>
+    </div>
+    <nav class="sidebar-nav">
+
+    </nav>
+    <div class="sidebar-footer sidebar-label">Short Course on the Application of Machine Learning for Automated Quantification of Behavior<br>JAX &middot; Oct 11&ndash;16, 2026</div>
+  </aside>
+
+  <div class="main">
+
+    <div class="hero">
+      <div class="eyebrow">Live Workflow</div>
+      <h1>JABS Demo</h1>
+      <p>This is the one notebook you actually run in this course - either live, in person on a course VM (JABS already installed), or async and self-paced on your own machine. Every other page in this module is precomputed, read-only output; this one is not.</p>
+    </div>
+
+    <section>
+      <div class="sectionlabel">What you'll be able to do</div>
+      <h2>Learning Goals</h2>
+      <p class="lede">By the end of this walkthrough, you should be able to:</p>
+      <ul class="objectives-list">
+        <li>Explain what JABS does, and why starting from a <strong>well-defined</strong> behavior (like grooming) makes a classifier's job easier</li>
+        <li>Read a JABS pose-estimation file and distinguish a keypoint's <strong>position</strong> from its <strong>confidence</strong></li>
+        <li>Judge whether a session's pose quality is trustworthy enough to use - and recognize what bad pose looks like</li>
+        <li>Describe the JABS workflow end to end: pose &rarr; features &rarr; XGBoost classifier &rarr; behavior labels</li>
+        <li>Train a classifier and run it on new sessions, and explain what part of that is reproducible</li>
+        <li>Interpret classifier performance against ground truth, and explain why accuracy alone can mislead</li>
+      </ul>
+    </section>
+
+    <section class="section-alt">
+      <div class="sectionlabel">Get the notebook</div>
+      <h2>jabs-demo.ipynb</h2>
+      <p style="font: 400 13.5px/1.6 'Inter', sans-serif; color: var(--text-muted); margin: 8px 0 16px;">
+        Open this in JupyterLab and run it top to bottom. It sets up your environment,
+        recaps the pose-data and QC concepts covered on the pages before this one, hands off to
+        the JABS desktop app for labeling, then calls <code>jabs-classify</code> to train and
+        run your classifier - live, in the notebook.
+      </p>
+      <a class="btn-primary" href="live_demo/jabs-demo.ipynb" download>Download jabs-demo.ipynb &rarr;</a>
+      <p style="font: 400 12.5px/1.6 'Inter', sans-serif; color: var(--text-muted); margin: 14px 0 0;">
+        On the course VM, this notebook is already there and JABS is already installed - open it
+        directly rather than downloading a copy.
+      </p>
+    </section>
+
+    <section>
+      <div class="back-note">
+        Before you open the notebook, <a href="live_demo_jabs_gui_walkthrough.html"><strong>the JABS GUI walkthrough</strong></a> previews the
+        labeling loop region-by-region, so you know what each panel does before you sit down and
+        label for real.
+      </div>
+    </section>
+
+    <div class="page-footer">
+      <span><a href="https://www.kumarlab.org/">Kumar Lab</a> &middot; <a href="https://www.jax.org/">The Jackson Laboratory</a> &middot; <a href="https://www.jax.org/education-and-learning/education-calendar/2026/10-october/machine-learning-for-automated-quantification-of-behavior-short-course">Short Course on the Application of Machine Learning for Automated Quantification of Behavior</a></span>
+      <span>Oct 11&ndash;16, 2026</span>
+    </div>
+
+  </div>
+</div>
+
+<script src="_shared/site.js"></script>
+<script>
+  JabsSite.initSidebarToggle();
+  JabsSite.initScrollToTop();
+</script>
+
+</body>
+</html>

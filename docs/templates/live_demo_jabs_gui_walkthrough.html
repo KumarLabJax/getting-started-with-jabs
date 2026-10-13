@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What Does JABS Annotation Look Like? - Live Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="_shared/design-system.css">
+<link rel="stylesheet" href="_shared/pygments.css">
+</head>
+<body>
+
+<div class="page">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <span class="sidebar-brand sidebar-label">From Pose to Behavior: A Hands-On Introduction to JABS</span>
+      <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">&lsaquo;</button>
+    </div>
+    <nav class="sidebar-nav">
+
+    </nav>
+    <div class="sidebar-footer sidebar-label">Short Course on the Application of Machine Learning for Automated Quantification of Behavior<br>JAX &middot; Oct 11&ndash;16, 2026</div>
+  </aside>
+
+  <div class="main">
+
+  <div class="hero">
+    <div class="eyebrow">Live Workflow</div>
+    <h1>What does JABS annotation look like?</h1>
+    <p>Your course VM comes with JABS already installed - the hands-on annotation exercise happens there, for real. This page previews that workflow first: labeling frames, training, and reviewing predictions inside the desktop app, so you know what to expect before you sit down at the VM.</p>
+    <p>This is a hand-built mockup of the JABS window, not a live screenshot - for the authoritative, always-current reference, see the JABS documentation's <a href="https://kumarlabjax.github.io/JABS-behavior-classifier/user-guide/gui/">GUI</a> and <a href="https://kumarlabjax.github.io/JABS-behavior-classifier/user-guide/labeling/">Labeling</a> pages.</p>
+  </div>
+
+  <section>
+    <div class="sectionlabel">The active-learning loop</div>
+    <h2 style="margin-bottom: 16px;">Label &rarr; train &rarr; predict &rarr; refine</h2>
+    <p class="lede">Click the numbered steps below to walk through the JABS window region by region.</p>
+
+    <div class="jabs-card">
+      <div class="jabs-topbar hl-region" data-region="topbar">
+        <strong>JAX Animal Behavior System 0.47.1</strong>
+        <div class="menu"><span>JABS</span><span>File</span><span>Tools</span><span>View</span><span>Features</span><span>Window</span></div>
+        <div class="hl-overlay"></div>
+      </div>
+      <div class="jabs-body">
+        <div class="jabs-videolist">
+          <div class="heading">Project Videos</div>
+          <div class="items">
+            <div class="selected">2001.avi</div>
+            <div>2002.avi</div><div>2003.avi</div><div>2004.avi</div><div>2005.avi</div>
+          </div>
+        </div>
+        <div class="jabs-video-col">
+          <div class="hl-region" data-region="video">
+            <div class="video-frame">
+              <span class="placeholder-text">JABS annotation screenshot / frame</span>
+              <span class="frame-badge">0</span>
+              <div class="zoom-box"></div>
+              <div class="zoom-cursor">&#9679;</div>
+            </div>
+            <div class="hl-overlay"></div>
+          </div>
+          <div class="hl-region" data-region="videocontrols" style="position: relative; margin-top: 6px;">
+            <span class="speed-badge">1.0x</span>
+            <div class="hl-overlay"></div>
+          </div>
+          <div class="timecode"><span>00:00:00</span><span>0:2468</span></div>
+          <div class="hl-region timeline-wrap" data-region="timeline">
+            <div class="timeline-label">Behavior (labels)</div>
+            <div class="timeline-lead"></div>
+            <div class="timeline-bar">
+              <div class="seg-behavior" style="width: 6%;"></div>
+              <div class="seg-not" style="width: 14%;"></div>
+              <div class="seg-behavior" style="width: 4%;"></div>
+              <div style="width: 76%;"></div>
+            </div>
+            <div class="timeline-label">Predictions</div>
+            <div class="timeline-lead"></div>
+            <div class="timeline-bar">
+              <div class="seg-behavior" style="width: 5%;"></div>
+              <div class="seg-not" style="width: 9%;"></div>
+              <div class="seg-behavior" style="width: 4%;"></div>
+              <div class="seg-not" style="width: 11%;"></div>
+              <div class="seg-behavior" style="width: 3%;"></div>
+              <div style="width: 68%;"></div>
+            </div>
+            <div class="hl-overlay"></div>
+          </div>
+        </div>
+        <div class="jabs-rightpanel">
+          <div class="panel-box hl-region" data-region="behaviorsubject">
+            <div class="heading">Behavior &amp; Subject</div>
+            <div class="panel-row"><div class="panel-field grow">grooming</div><div class="panel-field plus">+</div></div>
+            <div class="panel-field">0</div>
+            <div class="hl-overlay"></div>
+          </div>
+          <div class="panel-box hl-region" data-region="train">
+            <div class="heading">Classifier</div>
+            <div class="panel-row">
+              <button class="jabs-btn small">Train</button>
+              <button class="jabs-btn small">Classify</button>
+            </div>
+            <div class="panel-field" style="margin-bottom: 5px;">XGBoost</div>
+            <div class="classifier-row"><span>Window Size</span><span>5</span></div>
+            <div class="hl-region" data-region="cvcontrol">
+              <div class="kfold-label">Cross Validation k:</div>
+              <div class="kfold-track"><div class="kfold-thumb"></div></div>
+              <div class="kfold-range"><span>0</span><span>10</span></div>
+              <div class="checkbox-row"><span class="box"></span>All k-fold Cross Validation</div>
+              <div class="kfold-caption">defaults to k=1 - a single held-out video, not a real k-fold average</div>
+              <div class="hl-overlay"></div>
+            </div>
+            <div class="checkbox-row"><span class="box"></span>Balance Training Labels</div>
+            <div class="checkbox-row"><span class="box"></span>Symmetric Behavior</div>
+            <div class="hl-overlay"></div>
+          </div>
+          <div class="panel-box hl-region" data-region="labelsummary">
+            <div class="heading">Label Summary</div>
+            <div class="label-summary-grid">
+              <span></span><span class="col-head">Subj</span><span class="col-head">Total</span>
+              <span>Behavior</span><span>0</span><span>11,284</span>
+              <span>Not Behavior</span><span>0</span><span>17,553</span>
+            </div>
+            <div class="hl-overlay"></div>
+          </div>
+          <div class="hl-region" data-region="labelbuttons">
+            <div class="label-buttons">
+              <button class="jabs-btn grooming">grooming</button>
+              <button class="jabs-btn not-grooming">Not grooming</button>
+            </div>
+            <div class="hl-overlay"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hl-region" data-region="suggestion">
+      <div class="practice-note">
+        <div class="kicker">Active learning, in practice</div>
+        <div class="body">Classify, then scan the Predictions bar against your Behavior labels for disagreement - label there next, retrain, repeat</div>
+      </div>
+      <div class="hl-overlay"></div>
+    </div>
+
+    <div class="step-pills" id="stepPills">
+      <span class="hint">Click a step to see what it does &darr;</span>
+    </div>
+
+    <div class="step-detail">
+      <div class="kicker">Step <span id="stepDetailN">1</span> of <span id="stepDetailTotal">9</span></div>
+      <h2 id="stepDetailTitle"></h2>
+      <p id="stepDetailBody"></p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sectionlabel">Where this fits in the live demo</div>
+    <div class="back-note">
+      This page is a preview - on your course VM, JABS is already installed and you'll do this
+      labeling loop for real. The notebook picks up <strong>after</strong> that GUI work is done:
+      it calls <a href="https://kumarlabjax.github.io/JABS-behavior-classifier/user-guide/cli-tools/"><code>jabs-classify train</code></a> on a training file already exported from the GUI
+      above, then <a href="https://kumarlabjax.github.io/JABS-behavior-classifier/user-guide/cli-tools/"><code>jabs-classify classify</code></a> to run that classifier on new sessions,
+      live, in the notebook. Head back to <strong>&ldquo;Train and Classify - Live&rdquo;</strong>
+      in <code>jabs-demo.ipynb</code> to see that step. If the k-fold report above confused you,
+      see <strong>&ldquo;A Note on the JABS GUI&rsquo;s Own Training Report&rdquo;</strong> right
+      after the classifier metrics in that same notebook for the full explanation.
+    </div>
+  </section>
+
+  <div class="page-footer">
+    <span><a href="https://www.kumarlab.org/">Kumar Lab</a> &middot; <a href="https://www.jax.org/">The Jackson Laboratory</a> &middot; <a href="https://www.jax.org/education-and-learning/education-calendar/2026/10-october/machine-learning-for-automated-quantification-of-behavior-short-course">Short Course on the Application of Machine Learning for Automated Quantification of Behavior</a></span>
+    <span>Oct 11&ndash;16, 2026</span>
+  </div>
+
+  </div>
+</div>
+
+<script src="_shared/site.js"></script>
+<script>
+(function () {
+  "use strict";
+  JabsSite.initSidebarToggle();
+  JabsSite.initScrollToTop();
+
+  var STEPS = [
+    {
+      region: "topbar",
+      title: "The JABS window",
+      body: "JABS opens as a desktop app with a standard menu bar (File, Tools, View, Features, Window) - everything below happens inside one project."
+    },
+    {
+      region: "video",
+      title: "Video panel",
+      body: "The project video list sits on the left; the main panel plays the selected video frame-by-frame so you can find examples of your behavior."
+    },
+    {
+      region: "videocontrols",
+      title: "Playback & zoom controls",
+      body: "Playback speed, contrast/brightness adjustment, and a drag-to-zoom box help you inspect ambiguous frames closely before labeling them."
+    },
+    {
+      region: "timeline",
+      title: "Behavior vs. Predictions timeline",
+      body: "Two bars track the same video: your hand labels (Behavior) and the classifier's output (Predictions). Orange = behavior, blue = not-behavior, gray = unlabeled."
+    },
+    {
+      region: "behaviorsubject",
+      title: "Behavior & Subject",
+      body: "Pick which behavior you're labeling and which animal (subject) in a multi-animal video the label applies to."
+    },
+    {
+      region: "labelbuttons",
+      title: "Label buttons",
+      body: "With the playhead on a frame, click the behavior button (e.g. grooming) or Not-behavior to record a hand label for that frame."
+    },
+    {
+      region: "train",
+      title: "Train the classifier",
+      body: "Once you have enough labels, click Train. JABS fits an XGBoost classifier on kinematic pose features over your labeled frames."
+    },
+    {
+      region: "cvcontrol",
+      title: "Watch the k-fold setting",
+      body: "This slider defaults to k=1 and \"All k-fold Cross Validation\" starts unchecked - so the report you see after Train reflects a single held-out video, not a real average. A single unlucky fold can show 0 for your behavior even when the classifier trained on all your data works fine. Check \"All k-fold\" (or drag the slider up) before trusting that report."
+    },
+    {
+      region: "labelsummary",
+      title: "Label Summary",
+      body: "A running count of labeled frames per class, per subject - a quick sanity check that you have enough (and balanced enough) labels before training."
+    },
+    {
+      region: "suggestion",
+      title: "Close the active-learning loop",
+      body: "Run Classify, then compare the Predictions bar against your Behavior bar for disagreement. Label there next, retrain, and repeat - the exported training file this notebook uses is the end product of a few passes through this loop."
+    }
+  ];
+
+  JabsSite.initStepWalkthrough(STEPS);
+})();
+</script>
+
+</body>
+</html>

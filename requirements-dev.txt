@@ -1,0 +1,27 @@
+# Development Dependencies (NOT required for students)
+#
+# Install with: pip install -r requirements-dev.txt
+#
+# These are tools for developers, instructors, and the test suite:
+# - Code quality: ruff, pre-commit, nbstripout
+# - Testing: pytest, pytest-cov, pytest-xdist
+# - Notebook automation: papermill, nbmake, nbconvert
+#
+# Students only need: pip install -r requirements.txt
+# See developer/README.md for the development setup.
+
+# Code quality & linting
+ruff>=0.4.0
+pre-commit>=3.7
+nbstripout>=0.7.1
+
+# Notebook automation
+papermill>=2.5
+nbmake>=1.5
+nbconvert>=7.0
+
+# Testing
+pytest>=7.0
+pytest-cov>=4.0
+pytest-xdist>=3.0
+nbformat>=5.0

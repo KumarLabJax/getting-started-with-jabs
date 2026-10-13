@@ -1,0 +1,43 @@
+{
+  "doi": "doi:10.7910/DVN/SAPNJG",
+  "server": "https://dataverse.harvard.edu",
+  "description": "Kumar Lab mouse behavioral dataset - Sheppard et al. 2022. 2,509 55-min open-field sessions across 62 inbred and F1 hybrid mouse strains. This is a small example (2 sessions, one strain) so the download script works out of the box - add entries to this file to download more.",
+  "files": [
+    {
+      "file_id": "10165210",
+      "filename": "LL2-2_LP_pose_est_v6.h5",
+      "kind": "pose",
+      "pose_path": "LL2-B2B/2016-01-26_BG/LL2-2_LP_pose_est_v6.h5",
+      "strain": "LP/J",
+      "sex": "F",
+      "description": "LP/J (F) pose estimation file"
+    },
+    {
+      "file_id": "10165209",
+      "filename": "LL2-2_LP.mp4",
+      "kind": "video",
+      "pose_path": "LL2-B2B/2016-01-26_BG/LL2-2_LP_pose_est_v6.h5",
+      "strain": "LP/J",
+      "sex": "F",
+      "description": "LP/J (F) open-field video"
+    },
+    {
+      "file_id": "10165114",
+      "filename": "LL1-2_LP_ControlMale-1-PSY_pose_est_v6.h5",
+      "kind": "pose",
+      "pose_path": "LL1-B2B/2018-03-12_SPD/LL1-2_LP_ControlMale-1-PSY_pose_est_v6.h5",
+      "strain": "LP/J",
+      "sex": "M",
+      "description": "LP/J (M) pose estimation file"
+    },
+    {
+      "file_id": "10165113",
+      "filename": "LL1-2_LP_ControlMale-1-PSY.mp4",
+      "kind": "video",
+      "pose_path": "LL1-B2B/2018-03-12_SPD/LL1-2_LP_ControlMale-1-PSY_pose_est_v6.h5",
+      "strain": "LP/J",
+      "sex": "M",
+      "description": "LP/J (M) open-field video"
+    }
+  ]
+}

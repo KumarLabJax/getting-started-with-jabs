@@ -1,0 +1,10 @@
+[
+  {"notebook": "static_build_notebooks/00_setup_and_orientation.ipynb", "slug": "00_setup_and_orientation", "title": "Setup and Orientation"},
+  {"notebook": "static_build_notebooks/01_data_ingestion.ipynb", "slug": "01_data_ingestion", "title": "Data Ingestion"},
+  {"notebook": "static_build_notebooks/03_precomputed_tracking.ipynb", "slug": "03_precomputed_tracking", "title": "Precomputed Tracking & QC"},
+  {"notebook": "static_build_notebooks/04_jabs_classification.ipynb", "slug": "04_jabs_classification", "title": "Annotation and Classification with JABS"},
+  {"notebook": "static_build_notebooks/05_results_and_analysis.ipynb", "slug": "05_results_and_analysis", "title": "Results and Analysis"},
+  {"notebook": "static_build_notebooks/02_pose_estimation.ipynb", "slug": "02_pose_estimation", "title": "Pose Estimation", "eyebrow": "Deep Dive"},
+  {"notebook": "student_notebooks/deep_dives/dataverse_dataset.ipynb", "slug": "deep_dive_dataverse", "title": "Deep Dive: Dataverse Dataset", "eyebrow": "Deep Dive"},
+  {"notebook": "student_notebooks/deep_dives/your_data.ipynb", "slug": "deep_dive_your_data", "title": "Your Own Data!", "eyebrow": "Deep Dive"}
+]

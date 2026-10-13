@@ -1,0 +1,111 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+*.so
+*.dylib
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb~
+
+# Data - downloaded at runtime, not committed (except data/toy/)
+data/dataverse/
+data/zenodo/
+data/precomputed/
+data/predictions/
+# dense ground-truth session(s) held out from training entirely (e.g. 2010) -
+# hand-curated (not re-derivable from a Zenodo download), small (~4MB), and
+# needed by 05_results_and_analysis.ipynb and the Live Workflow notebook's
+# evaluation section - committed rather than gitignored.
+!data/dense_gt_a1/
+# ...but not what JABS generates when the GUI/CLI opens it as a project
+# (only jabs/project.json and jabs/annotations/ are committed)
+data/dense_gt_a1/jabs/archive/
+data/dense_gt_a1/jabs/cache/
+data/dense_gt_a1/jabs/classifiers/
+data/dense_gt_a1/jabs/features/
+data/dense_gt_a1/jabs/predictions/
+data/dense_gt_a1/jabs/session/
+data/dense_gt_a1/jabs/training_logs/
+# second annotation pass (a2): only jabs/project.json and jabs/annotations/ are committed
+data/dense_gt_a2/jabs/archive/
+data/dense_gt_a2/jabs/cache/
+data/dense_gt_a2/jabs/classifiers/
+data/dense_gt_a2/jabs/features/
+data/dense_gt_a2/jabs/predictions/
+data/dense_gt_a2/jabs/session/
+data/dense_gt_a2/jabs/training_logs/
+# scrubbed (annotation-withheld) practice set for live JABS GUI annotation -
+# regenerated from data/zenodo/ via student_scripts/make_scrubbed_practice_set.py, not committed
+data/zenodo_scrubbed/
+# staging area for toy-data prep (download here, then slice into data/toy/)
+data/prep_toy/
+# JABS example projects (bundles + their extractions) - large media, not committed
+data/jabs_single_mouse_behaviors.zip
+data/jabs_single_mouse_behaviors/
+data/jabs_grooming.zip
+data/jabs_grooming/
+data/jabs_turn.zip
+data/jabs_turn/
+# toy videos: kept locally for the JABS GUI exercise, but untracked
+# (only pose .h5 + jabs/annotations under data/toy/ are committed)
+data/toy/*.avi
+data/toy/*.mp4
+# generated QC output - re-created by running NB03
+data/**/qc_passed_sessions.json
+
+# Developer transient artifacts (generated manifests + reports)
+developer/*_manifest.json
+
+# Local site-preview build output (developer/scripts/build_site.py) - a dev
+# iteration tool, not committed
+docs/site_preview/
+
+# JABS project artifacts
+*.jabs
+*.slp
+*.model
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Singularity
+*.sif
+*.def
+
+# Logs and temp
+*.log
+*.tmp
+tmp/
+
+# Coverage artifacts
+.coverage
+**/.coverage
+htmlcov/
+
+# full Zenodo grooming set without the held-out ground-truth session (2010), features cached
+# (student_scripts/prepare_training_set.py); the training pool for the pretrained classifier and
+# the practice set. Only the results in data/pretrained/ are committed.
+data/zenodo_no_gt_cached/

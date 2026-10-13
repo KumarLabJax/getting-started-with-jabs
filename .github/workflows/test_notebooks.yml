@@ -1,0 +1,62 @@
+name: Test Notebooks
+
+on:
+  push:
+    branches: [dev, main]
+  pull_request:
+    branches: [dev, main]
+  schedule:
+    # Nightly at 02:17 UTC
+    - cron: "17 2 * * *"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m venv .venv
+          source .venv/bin/activate
+          pip install -r requirements.txt -r requirements-dev.txt
+
+      - name: Run notebooks with nbmake
+        run: |
+          source .venv/bin/activate
+          pose_count=$(ls data/toy/*_pose_est_v6.h5 2>/dev/null | wc -l)
+          if [ "$pose_count" -eq 0 ]; then
+            echo "SKIP: no pose files found in data/toy/ - commit toy data to enable notebook CI."
+            exit 0
+          fi
+          # Notebooks 00, 01, 02, 03, 05 run against the committed toy data.
+          # Each auto-detects its data source; the full dataset is absent in CI,
+          # so they fall back to data/toy/ with no parameter injection needed.
+          # Notebook 04 (JABS GUI) is excluded - it cannot run headlessly.
+          notebooks=(
+            static_build_notebooks/00_setup_and_orientation.ipynb
+            static_build_notebooks/01_data_ingestion.ipynb
+            static_build_notebooks/02_pose_estimation.ipynb
+            static_build_notebooks/03_precomputed_tracking.ipynb
+            static_build_notebooks/05_results_and_analysis.ipynb
+          )
+          missing=0
+          for nb in "${notebooks[@]}"; do
+            if [ ! -f "$nb" ]; then
+              echo "SKIP: $nb not yet authored"
+              missing=$((missing + 1))
+            fi
+          done
+          if [ "$missing" -eq "${#notebooks[@]}" ]; then
+            echo "No student notebooks exist yet - skipping nbmake run."
+            exit 0
+          fi
+          existing=()
+          for nb in "${notebooks[@]}"; do
+            [ -f "$nb" ] && existing+=("$nb")
+          done
+          python -m pytest --nbmake "${existing[@]}" -v
