@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Annotation and Classification with JABS - Getting Started with JABS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="_shared/design-system.css">
+<link rel="stylesheet" href="_shared/pygments.css">
+</head>
+<body>
+
+<div class="page">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <span class="sidebar-brand sidebar-label">From Pose to Behavior: A Hands-On Introduction to JABS</span>
+      <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">&lsaquo;</button>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="00_setup_and_orientation.html" class="sidebar-label">Setup and Orientation</a>
+      <a href="01_data_ingestion.html" class="sidebar-label">Data Ingestion</a>
+      <a href="03_precomputed_tracking.html" class="sidebar-label">Precomputed Tracking & QC</a>
+      <a href="04_jabs_classification.html" class="active sidebar-label">Annotation and Classification with JABS</a>
+      <ul class="sidebar-toc sidebar-label">
+        <li><a href="#Learning-Goals">Learning Goals</a></li>
+        <li><a href="#The-Active-Learning-Loop">The Active-Learning Loop</a></li>
+        <li><a href="#Installing-JABS">Installing JABS</a></li>
+        <li><a href="#Opening-a-Project">Opening a Project</a></li>
+        <li><a href="#Where-the-Hands-On-Work-Happens">Where the Hands-On Work Happens</a></li>
+        <li><a href="#Understanding-Checkpoint">Understanding Checkpoint</a></li>
+        <li><a href="#What-Next">What Next</a></li>
+      </ul>
+      <a href="05_results_and_analysis.html" class="sidebar-label">Results and Analysis</a>
+      <div class="sidebar-heading sidebar-label">Live Workflow</div>
+      <a href="live_demo.html" class="sidebar-label">JABS Demo</a>
+      <a href="live_demo_jabs_gui_walkthrough.html" class="sidebar-label">JABS GUI Walkthrough</a>
+      <div class="sidebar-heading sidebar-label">Deep Dives</div>
+      <a href="02_pose_estimation.html" class="sidebar-label">Pose Estimation</a>
+      <a href="deep_dive_dataverse.html" class="sidebar-label">Dataverse Dataset</a>
+      <a href="deep_dive_your_data.html" class="sidebar-label">Your Own Data!</a>
+    </nav>
+    <div class="sidebar-footer sidebar-label">Short Course on the Application of Machine Learning for Automated Quantification of Behavior<br>JAX &middot; Oct 11&ndash;16, 2026</div>
+  </aside>
+
+  <div class="main">
+
+    <div class="hero">
+      <h1>Annotation and Classification with JABS</h1>
+    </div>
+
+    <section>
+      <div class="nb-body">
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=0"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Estimated time to read:</strong> 10-15 minutes
+<strong>Depends on:</strong> Precomputed Tracking &amp; QC
+<strong>Unlocks:</strong> Results and Analysis</p>
+<p>Everything so far has been about the data: loading pose, understanding confidence, filtering to
+trustworthy sessions. This page is the bridge to the part where you actually <strong>use JABS</strong> - the
+desktop app that turns your labels into a behavior classifier. It explains the loop conceptually
+and gets JABS installed and open; the hands-on labeling itself happens on the
+<a href="live_demo.html">JABS Demo</a> page.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=1"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Learning-Goals">Learning Goals<a class="anchor-link" href="#Learning-Goals">¶</a></h2><p>By the end of this page, you should be able to:</p>
+<ul>
+<li>Explain the label -&gt; train -&gt; predict -&gt; refine active-learning loop JABS uses</li>
+<li>Install JABS and open a project from the command line</li>
+<li>Know where the actual hands-on GUI work happens and what to expect there</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=2"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="The-Active-Learning-Loop">The Active-Learning Loop<a class="anchor-link" href="#The-Active-Learning-Loop">¶</a></h2><p><strong>Label, train, predict, refine.</strong> You do not label an entire video up front. You label a
+modest number of example frames for your behavior, train a classifier on them, then use the
+classifier's own predictions to find where it disagrees with you - that disagreement is exactly
+where labeling next teaches the classifier the most. Each pass through the loop needs less new
+labeling than the last.</p>
+<p>Concretely, inside a JABS project:</p>
+<ol>
+<li><strong>Label</strong> - watch a video in the JABS window, mark frames as your behavior or not</li>
+<li><strong>Train</strong> - JABS fits a classifier (this course uses <strong>XGBoost</strong>; JABS also supports Random
+Forest, its default, and CatBoost - see <a href="https://kumarlabjax.github.io/JABS-behavior-classifier/user-guide/classifier-types/">JABS documentation, User Guide: Classifier
+Types</a>)
+on kinematic features computed from the pose keypoints over your labeled frames</li>
+<li><strong>Predict</strong> - run the trained classifier on the rest of the video (or other videos in the
+project)</li>
+<li><strong>Refine</strong> - compare the classifier's predictions against your own labels, find the frames
+where they disagree, label there next, and retrain</li>
+</ol>
+<p>That loop is why JABS calls itself an active-learning system: the classifier tells you where it
+is uncertain, and that is where your next labeling effort goes furthest.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=3"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Installing-JABS">Installing JABS<a class="anchor-link" href="#Installing-JABS">¶</a></h2><p>Full installation instructions are maintained in the official JABS documentation, not
+duplicated here - they will stay current as JABS evolves:</p>
+<ul>
+<li><a href="https://jabs-tutorial.readthedocs.io/en/latest/">JABS tutorial</a> - installation, GUI walkthrough, CLI reference</li>
+<li><a href="https://github.com/KumarLabJax/JABS-behavior-classifier">JABS-behavior-classifier</a> - source, releases, issue tracker</li>
+</ul>
+<blockquote>
+<p><strong>Version note.</strong> This course's material - the screenshots, menu layout, and default settings
+described here and on the Live Workflow page - was developed and tested against
+<strong>JABS 0.47.1</strong> specifically (see this repo's <code>requirements.txt</code>). JABS is under active
+development; if a newer release looks or behaves differently from what is described here,
+check your installed version first (<code>pip show jabs-behavior-classifier</code>) before assuming
+something is broken.</p>
+</blockquote>
+<p>If you are on the course VM, JABS 0.47.1 is already installed - there is nothing to do here.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=4"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Opening-a-Project">Opening a Project<a class="anchor-link" href="#Opening-a-Project">¶</a></h2><blockquote>
+<p>"A JABS project is a directory of video files and their corresponding pose estimation files."</p>
+<ul>
+<li><a href="https://kumarlabjax.github.io/JABS-behavior-classifier/user-guide/project-setup/">JABS documentation, User Guide: Project Setup</a></li>
+</ul>
+</blockquote>
+<p>Concretely, that's the same <code>data/</code> layout used throughout this course's QC and ingestion pages</p>
+<ul>
+<li>videos, pose files, and any existing annotations in one folder. The first time JABS opens a
+project directory, it creates a <code>jabs/</code> subdirectory to hold project state: settings and
+metadata (<code>project.json</code>), your labels, generated features, trained classifiers, and the latest
+predictions.</li>
+</ul>
+<p>Launch JABS pointed at that folder from the command line:</p>
+<div class="highlight"><pre><span></span>jabs<span class="w"> </span>/path/to/your/project
+</pre></div>
+<p>JABS opens with the project's videos listed in a sidebar. Select one to start reviewing frames
+and labeling. The <a href="live_demo.html">JABS Demo</a> page picks up from exactly this
+point, using the QC-passed sessions from the previous page as the project.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=5"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Where-the-Hands-On-Work-Happens">Where the Hands-On Work Happens<a class="anchor-link" href="#Where-the-Hands-On-Work-Happens">¶</a></h2><p>This page is conceptual - it does not run any code. The actual labeling, training, and
+classifying happens in two places:</p>
+<ul>
+<li><strong><a href="live_demo.html">JABS Demo</a></strong> - the notebook you actually run, either live
+in person on a course VM or async on your own machine. It hands off to the JABS GUI for
+labeling, then calls <code>jabs-classify</code> from the notebook to train and run the classifier on new
+sessions.</li>
+<li><strong><a href="live_demo_jabs_gui_walkthrough.html">The JABS GUI walkthrough</a></strong> - a region-by-region
+preview of the JABS window, so you know what each panel does before you sit down and label
+for real.</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=6"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Understanding-Checkpoint">Understanding Checkpoint<a class="anchor-link" href="#Understanding-Checkpoint">¶</a></h2><ol>
+<li>In your own words: why does JABS ask you to label a <em>few</em> frames, retrain, and repeat, rather
+than asking for all your labels up front?</li>
+<li>What does the "predict" step in the loop actually give you that you did not already have
+after "train"?</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=7"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="What-Next">What Next<a class="anchor-link" href="#What-Next">¶</a></h2><p><strong>Next:</strong> Results and Analysis turns classifier output - either the course's example
+predictions or your own, once you have gone through the loop above - into ethograms, bout
+statistics, and classifier evaluation metrics.</p>
+</div>
+</div>
+</div>
+
+      </div>
+    </section>
+    <div class="page-next">
+      <a class="btn-primary" href="05_results_and_analysis.html">Continue: Results and Analysis &rarr;</a>
+      <a class="btn-secondary" href="live_demo.html">Try it live: JABS Demo &rarr;</a>
+    </div>
+
+
+    <div class="page-footer">
+      <span><a href="https://www.kumarlab.org/">Kumar Lab</a> &middot; <a href="https://www.jax.org/">The Jackson Laboratory</a> &middot; <a href="https://www.jax.org/education-and-learning/education-calendar/2026/10-october/machine-learning-for-automated-quantification-of-behavior-short-course">Short Course on the Application of Machine Learning for Automated Quantification of Behavior</a></span>
+      <span>Oct 11&ndash;16, 2026</span>
+    </div>
+
+  </div>
+</div>
+
+<script src="_shared/site.js"></script>
+<script>
+  JabsSite.initSidebarToggle();
+  JabsSite.initScrollToTop();
+</script>
+
+</body>
+</html>

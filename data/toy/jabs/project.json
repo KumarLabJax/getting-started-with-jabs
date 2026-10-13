@@ -1,0 +1,50 @@
+{
+  "behavior": {
+    "grooming": {
+      "balance_labels": false,
+      "cm_units": 0,
+      "fft": true,
+      "segmentation": false,
+      "social": false,
+      "static_objects": {
+        "corners": false,
+        "food_hopper": false,
+        "lixit": false
+      },
+      "symmetric_behavior": false,
+      "window": true,
+      "window_size": 60
+    }
+  },
+  "defaults": {
+    "balance_labels": false,
+    "cm_units": 1,
+    "fft": true,
+    "segmentation": true,
+    "social": true,
+    "static_objects": {
+      "corners": true,
+      "food_hopper": false,
+      "lixit": false
+    },
+    "symmetric_behavior": false,
+    "window": true,
+    "window_size": 5
+  },
+  "selected_behavior": "grooming",
+  "version": "0.33.0",
+  "video_files": {
+    "2010.avi": {
+      "identities": 1
+    },
+    "2013.avi": {
+      "identities": 1
+    },
+    "2016.avi": {
+      "identities": 1
+    }
+  },
+  "window_sizes": [
+    60
+  ]
+}

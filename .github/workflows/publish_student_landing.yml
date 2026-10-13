@@ -1,0 +1,58 @@
+name: Publish to student-landing
+
+# Manual only. Builds the student site from the notebooks (and their saved
+# outputs) committed on dev and pushes the result to the student-landing branch.
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Build and list what would change, but do not push"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+          path: dev
+
+      - uses: actions/checkout@v4
+        with:
+          ref: student-landing
+          path: student-landing
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r dev/requirements.txt -r dev/requirements-dev.txt
+
+      - name: Build site and sync allowlisted paths
+        run: python dev/developer/scripts/publish_site.py --target student-landing
+
+      - name: Show changes
+        working-directory: student-landing
+        run: |
+          git add -A
+          git status --short
+          git diff --cached --stat | tail -20
+
+      - name: Commit and push
+        if: ${{ !inputs.dry_run }}
+        working-directory: student-landing
+        run: |
+          if git diff --cached --quiet; then
+            echo "No changes to publish."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "docs: publish from dev @ $(git -C ../dev rev-parse --short HEAD)"
+          git push origin student-landing

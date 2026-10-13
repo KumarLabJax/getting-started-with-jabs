@@ -1,0 +1,20 @@
+# Annotation sets to download from the Zenodo JABS Behavior Classifier Example Projects deposit.
+# DOI: https://doi.org/10.5281/zenodo.16697331
+#
+# Uncomment the lines for the sets you want. The script reads this file and
+# downloads exactly the listed zips - you do not need to touch the script itself.
+#
+# Available sets:
+#   jabs_grooming.zip               - grooming behavior (mouse self-grooming)
+#   jabs_turn.zip                   - turning behavior
+#   jabs_single_mouse_behaviors.zip - escape, supported rearing, unsupported rearing
+#   jabs_social.zip                 - social interaction behaviors
+#
+# For the course (NB01-NB05): grooming is the default example behavior.
+# Add more sets by uncommenting their lines.
+
+annotation_sets:
+  - jabs_grooming.zip
+  # - jabs_turn.zip
+  # - jabs_single_mouse_behaviors.zip
+  # - jabs_social.zip

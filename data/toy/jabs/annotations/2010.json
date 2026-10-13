@@ -1,0 +1,197 @@
+{
+  "file": "2010.avi",
+  "num_frames": 1491,
+  "labels": {
+    "0": {
+      "grooming": [
+        {
+          "start": 0,
+          "end": 85,
+          "present": true
+        },
+        {
+          "start": 86,
+          "end": 185,
+          "present": false
+        },
+        {
+          "start": 230,
+          "end": 282,
+          "present": false
+        },
+        {
+          "start": 317,
+          "end": 358,
+          "present": false
+        },
+        {
+          "start": 386,
+          "end": 447,
+          "present": false
+        },
+        {
+          "start": 459,
+          "end": 558,
+          "present": true
+        },
+        {
+          "start": 559,
+          "end": 615,
+          "present": false
+        },
+        {
+          "start": 620,
+          "end": 681,
+          "present": true
+        },
+        {
+          "start": 683,
+          "end": 724,
+          "present": false
+        },
+        {
+          "start": 727,
+          "end": 733,
+          "present": true
+        },
+        {
+          "start": 738,
+          "end": 815,
+          "present": false
+        },
+        {
+          "start": 817,
+          "end": 822,
+          "present": true
+        },
+        {
+          "start": 838,
+          "end": 847,
+          "present": true
+        },
+        {
+          "start": 860,
+          "end": 1118,
+          "present": true
+        },
+        {
+          "start": 1137,
+          "end": 1199,
+          "present": false
+        },
+        {
+          "start": 1202,
+          "end": 1360,
+          "present": true
+        },
+        {
+          "start": 1367,
+          "end": 1427,
+          "present": false
+        },
+        {
+          "start": 1431,
+          "end": 1490,
+          "present": true
+        }
+      ]
+    }
+  },
+  "unfragmented_labels": {
+    "0": {
+      "grooming": [
+        {
+          "start": 0,
+          "end": 85,
+          "present": true
+        },
+        {
+          "start": 86,
+          "end": 185,
+          "present": false
+        },
+        {
+          "start": 230,
+          "end": 282,
+          "present": false
+        },
+        {
+          "start": 317,
+          "end": 358,
+          "present": false
+        },
+        {
+          "start": 386,
+          "end": 447,
+          "present": false
+        },
+        {
+          "start": 459,
+          "end": 558,
+          "present": true
+        },
+        {
+          "start": 559,
+          "end": 615,
+          "present": false
+        },
+        {
+          "start": 620,
+          "end": 681,
+          "present": true
+        },
+        {
+          "start": 683,
+          "end": 724,
+          "present": false
+        },
+        {
+          "start": 727,
+          "end": 733,
+          "present": true
+        },
+        {
+          "start": 738,
+          "end": 815,
+          "present": false
+        },
+        {
+          "start": 817,
+          "end": 822,
+          "present": true
+        },
+        {
+          "start": 838,
+          "end": 847,
+          "present": true
+        },
+        {
+          "start": 860,
+          "end": 1118,
+          "present": true
+        },
+        {
+          "start": 1137,
+          "end": 1199,
+          "present": false
+        },
+        {
+          "start": 1202,
+          "end": 1360,
+          "present": true
+        },
+        {
+          "start": 1367,
+          "end": 1427,
+          "present": false
+        },
+        {
+          "start": 1431,
+          "end": 1490,
+          "present": true
+        }
+      ]
+    }
+  },
+  "labeler": "gbeane"
+}

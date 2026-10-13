@@ -1,0 +1,20 @@
+# Core scientific stack
+numpy>=1.24
+pandas>=2.0
+h5py>=3.8
+matplotlib>=3.7
+seaborn>=0.12
+ipywidgets>=8.0
+opencv-python>=4.8
+
+# JupyterLab
+jupyterlab>=4.0
+
+# Harvard Dataverse access
+pyDataverse>=0.3.2
+
+# Config-driven data selection (config/zenodo/annotation_sets.yaml)
+PyYAML>=6.0
+
+# Kumar Lab tools
+jabs-behavior-classifier==0.47.1

@@ -1,0 +1,542 @@
+/* ==========================================================================
+   Getting Started with JABS - shared site design system
+   ==========================================================================
+   Consolidated from docs/templates/04_jabs_classification_landing.html and
+   docs/templates/live_demo_jabs_gui_walkthrough.html, which had nearly
+   identical CSS (especially the JABS GUI mockup) duplicated in two places.
+   Every new site page should link this file instead of embedding its own
+   <style> block, and use the classes documented below rather than inventing
+   new one-off styles - that's the whole point of pulling this out.
+
+   Sections in this file:
+     1. Design tokens (colors, fonts)
+     2. Base / reset
+     3. Page shell + sidebar navigation
+     4. Content components (hero, sections, cards, lists, CTA, footer)
+     5. JABS GUI mockup (shared by any page that needs to preview the app)
+     6. Walkthrough mechanics (numbered step-pills + highlight overlay)
+     7. Rendered notebook content (nbconvert "basic" template output, styled
+        to match this design system - see developer/scripts/render_site_page.py)
+
+   Fonts: link these in <head> before this stylesheet -
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap" rel="stylesheet">
+   ========================================================================== */
+
+/* ---- 1. Design tokens ---- */
+:root {
+  --navy-1: #0F2A3E; --navy-2: #12324A; --navy-3: #0F1F29; --navy-4: #16232C;
+  --teal-1: #0E7C7B; --teal-2: #0E6E6C;
+  --orange-1: #B4552B; --orange-2: #D68A1A; --orange-3: #F0B592;
+  --blue-1: #2F6FD6; --blue-2: #2B6CB0;
+  --bg-canvas: #E9E4D8; --bg-alt: #F7F5EF; --bg-warm: #FDF6EE; --bg-card: #fff;
+  --text-head: #16232C; --text-body: #3A4750; --text-muted: #5B6870;
+  --highlight: #FFD65A;
+  --font-sans: 'Inter', system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --font-serif: 'Source Serif 4', serif;
+  --font-mono: ui-monospace, Menlo, monospace;
+}
+
+/* ---- 2. Base / reset ---- */
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg-canvas);
+  font-family: var(--font-sans);
+  color: var(--text-body);
+}
+
+h1, h2, h3 { font-family: var(--font-serif); margin: 0; color: var(--text-head); }
+
+a { color: var(--teal-2); }
+a:hover { color: var(--navy-2); }
+
+/* Keyboard-focus ring, additive only - never suppress the browser's native
+   outline, just make it visible and consistent. Adapted from the same
+   pattern in KumarLabJax/cfde-multiomics (:focus-visible with an accent-
+   colored outline); --orange-2 is one of our own existing tokens rather
+   than introducing a new color for this. */
+:focus-visible {
+  outline: 2px solid var(--orange-2);
+  outline-offset: 2px;
+}
+
+code {
+  font-family: var(--font-mono);
+  background: #f5f5f5;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* ---- 3. Page shell + sidebar navigation ---- */
+.page {
+  /* Fluid - fills the actual viewport width and resizes with it, rather than
+     capping at a fixed max-width and leaving empty margins on wide screens. */
+  width: 100%;
+  margin: 0;
+  background: var(--bg-card);
+  box-shadow: 0 4px 18px rgba(18, 50, 74, .1);
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 220px;
+  flex: none;
+  background: var(--navy-1);
+  padding: 24px 20px;
+  transition: width .2s ease, padding .2s ease;
+  overflow: hidden;
+}
+/* Collapsed: narrower, and re-centered padding so the reopen button below
+   sits centered and full-size, not squeezed toward one edge. */
+.sidebar.collapsed { width: 68px; padding-left: 16px; padding-right: 16px; }
+
+.sidebar-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.sidebar.collapsed .sidebar-head { justify-content: center; }
+
+/* The course's full title, not a short label - unlike .eyebrow below (used
+   for short hero/page labels like "Notebook 03"), this wraps across lines
+   instead of forcing nowrap, which would either overflow the ribbon or
+   truncate a title that should stay readable in full. */
+.sidebar-brand {
+  font: 600 12px/1.35 var(--font-sans);
+  color: #CFE0E6;
+  padding-top: 3px;
+}
+
+.eyebrow {
+  font: 700 11px/1 var(--font-sans);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: #7FA8B4;
+  white-space: nowrap;
+}
+
+.sidebar-toggle {
+  width: 26px; height: 26px; flex: none;
+  border-radius: 6px; border: none;
+  background: rgba(255, 255, 255, .12);
+  color: #fff; cursor: pointer;
+  font: 600 14px var(--font-sans);
+}
+/* Collapsed: bigger and more visually obvious - this is now the only thing
+   in the rail, so it needs to read clearly as "click me to reopen". */
+.sidebar.collapsed .sidebar-toggle {
+  width: 36px; height: 36px;
+  font-size: 18px;
+  background: rgba(255, 255, 255, .16);
+}
+.sidebar.collapsed .sidebar-toggle:hover { background: rgba(255, 255, 255, .26); }
+
+.sidebar-nav { display: flex; flex-direction: column; gap: 2px; margin-top: 22px; min-width: 0; }
+.sidebar-nav a {
+  display: block;
+  padding: 9px 10px;
+  border-radius: 6px;
+  color: #B9CBD1;
+  font: 500 12.5px var(--font-sans);
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* .sidebar-nav is a flex column - without this, a flex item's default
+     min-width:auto lets non-wrapping text push the box wider than the
+     sidebar instead of shrinking to it, so overflow:hidden never kicks in
+     and the label bleeds past the highlighted background. */
+  min-width: 0;
+}
+.sidebar-nav a.active { background: rgba(255, 255, 255, .1); color: #fff; font-weight: 600; }
+
+.sidebar-heading {
+  margin: 18px 0 4px;
+  padding: 0 10px;
+  font: 600 10.5px var(--font-sans);
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: #6E8894;
+}
+
+/* Per-page table of contents, nested under the active page's own nav link -
+   only the page you are currently on shows its section list. */
+.sidebar-toc { list-style: none; margin: 2px 0 6px; padding: 0; min-width: 0; }
+.sidebar-toc li { margin: 0; }
+.sidebar-toc a {
+  display: block;
+  padding: 5px 10px 5px 26px;
+  border-radius: 6px;
+  color: #8FA5AE;
+  font: 500 11.5px var(--font-sans);
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sidebar-toc a:hover { background: rgba(255, 255, 255, .06); color: #fff; }
+
+.sidebar-label { transition: opacity .15s ease; }
+/* display:none, not opacity:0 - the eyebrow and nav links share this class
+   and are flex items inside .sidebar-head/.sidebar-nav; opacity:0 keeps them
+   in the layout, so at 60px collapsed width (minus 40px of padding) they
+   overflow the sidebar-toggle button out of the clickable/visible area -
+   collapsing it once, then makes it impossible to expand again. */
+.sidebar.collapsed .sidebar-label { display: none; }
+
+.sidebar-footer {
+  margin-top: 24px; padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, .12);
+  font: 400 11.5px/1.6 var(--font-sans);
+  color: #8FA9B1;
+}
+
+.main { flex: 1; min-width: 0; }
+
+/* ---- 4. Content components ---- */
+.hero {
+  background: linear-gradient(150deg, #0F2A3E, #12324A 60%, #164C5C);
+  padding: 48px clamp(24px, 5vw, 48px) 40px;
+  color: #fff;
+}
+.hero h1 { font-size: clamp(24px, 3vw, 34px); line-height: 1.15; margin-top: 12px; color: #fff; }
+.hero p { font: 400 15px/1.6 var(--font-sans); color: #C9DCE0; max-width: 620px; margin-top: 10px; }
+
+.badge-row { display: flex; gap: 10px; margin-top: 22px; flex-wrap: wrap; }
+.badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font: 600 11px/1 var(--font-sans);
+  padding: 6px 11px; border-radius: 999px;
+  background: rgba(255, 255, 255, .14); color: #fff;
+}
+
+.step-tracker { display: flex; background: #fff; border-bottom: 1px solid #E7E4DA; overflow-x: auto; }
+.step-tracker .step { flex: 1; min-width: 110px; padding: 14px 10px; text-align: center; border-right: 1px solid #EEEBE2; }
+.step-tracker .step:last-child { border-right: none; }
+.step-tracker .step.active { background: var(--bg-warm); }
+.step-tracker .step .num { font: 700 11px var(--font-sans); color: var(--teal-1); }
+.step-tracker .step.active .num { color: var(--orange-1); }
+.step-tracker .step .label { font: 500 11.5px var(--font-sans); color: #425058; margin-top: 3px; }
+.step-tracker .step.active .label { font-weight: 600; color: var(--orange-1); }
+
+section { padding: 40px clamp(24px, 5vw, 48px); }
+.section-alt { background: var(--bg-alt); }
+.section-warm { background: var(--bg-warm); border-top: 1px solid #F0DFC9; border-bottom: 1px solid #F0DFC9; }
+
+.sectionlabel {
+  font: 700 11px/1 var(--font-sans);
+  letter-spacing: .06em; text-transform: uppercase;
+  color: var(--teal-1); margin: 0 0 8px;
+}
+.sectionlabel.warm { color: var(--orange-1); }
+
+section h2 { font-size: 20px; }
+section h3 { font-size: 17px; }
+.lede { font: 400 13.5px/1.6 var(--font-sans); color: var(--text-muted); margin: 8px 0 0; max-width: 640px; }
+
+.objectives-list { margin: 14px 0 0; padding-left: 20px; font: 400 14.5px/1.7 var(--font-sans); color: var(--text-body); }
+.references-list { margin: 10px 0 0; padding-left: 20px; font: 400 13px/1.8 var(--font-sans); color: var(--text-body); }
+.live-demo-list { margin: 0; padding-left: 20px; font: 400 13.5px/1.7 var(--font-sans); color: var(--text-body); }
+
+/* Generic 2-col card grid - originally the behavior picker, reusable for any card set. */
+.behavior-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
+@media (max-width: 640px) { .behavior-grid { grid-template-columns: 1fr; } }
+.behcard { border: 1px solid #DCE4E2; border-radius: 10px; padding: 14px 16px; background: #FBFAF7; }
+.behcard.span-2 { grid-column: 1 / -1; }
+.behcard-head { display: flex; justify-content: space-between; gap: 8px; }
+.behcard-head strong { font: 600 14px var(--font-sans); color: var(--text-head); }
+.behcard-head code { font: 600 10.5px var(--font-mono); padding: 2px 6px; border-radius: 4px; background: none; }
+.behcard p { font: 400 12.5px/1.5 var(--font-sans); color: var(--text-muted); margin: 6px 0 0; }
+.chip-grooming { color: #1B7A6B; background: #E4F1EC; }
+.chip-walking { color: #2B6CB0; background: #E5EEF8; }
+.chip-rearing_u { color: #8854A8; background: #EFE7F4; }
+.chip-rearing_s { color: var(--orange-1); background: #F8EAE1; }
+.chip-arrest { color: #4A5568; background: #EAECEF; }
+
+.checklist { display: flex; flex-direction: column; gap: 10px; }
+.checkrow { display: flex; gap: 10px; align-items: flex-start; font: 400 13.5px/1.5 var(--font-sans); color: #2B3A42; }
+.chk { width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid #9AB0AC; flex: none; margin-top: 2px; }
+
+.notebook-cta { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+.notebook-cta .info { flex: 1; min-width: 280px; }
+.btn-primary {
+  font: 600 13px/1 var(--font-sans); padding: 11px 20px; border-radius: 8px;
+  border: none; cursor: pointer; background: var(--navy-2); color: #fff;
+  text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+}
+
+/* A second, less-emphasized next-step option alongside .btn-primary - used
+   where a page has more than one sensible "next" (e.g. entering/leaving the
+   Live Workflow branch) rather than one single next page. */
+.btn-secondary {
+  font: 600 13px/1 var(--font-sans); padding: 10px 19px; border-radius: 8px;
+  border: 1px solid var(--navy-2); cursor: pointer; background: transparent;
+  color: var(--navy-2); text-decoration: none; display: inline-flex;
+  align-items: center; gap: 8px;
+}
+
+.keycap {
+  font: 600 11px var(--font-mono); background: #EEF1F2; color: var(--navy-2);
+  border: 1px solid #D3DCDF; border-radius: 4px; padding: 1px 6px;
+}
+
+.back-note { background: var(--bg-alt); border-radius: 8px; padding: 14px 18px; font: 400 13.5px/1.6 var(--font-sans); color: var(--text-body); }
+
+.page-footer {
+  padding: 24px clamp(24px, 5vw, 48px); background: var(--navy-2); color: #C9DCE0;
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+  font: 400 12.5px/1.6 var(--font-sans);
+}
+.page-footer a {
+  color: inherit; text-decoration: underline;
+  text-decoration-color: rgba(201, 220, 224, .45);
+}
+.page-footer a:hover { color: #fff; text-decoration-color: #fff; }
+
+/* "Next page" link(s) at the end of a page's content, before the page-footer
+   strip - only pages with a defined next step in the reading order get one.
+   A page can offer more than one (e.g. branching into vs. out of the Live
+   Workflow section) - those wrap onto their own row on narrow screens. */
+.page-next {
+  padding: 0 clamp(24px, 5vw, 48px) 32px;
+  display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 10px;
+}
+
+/* Fixed "scroll to top" button, injected by JabsSite.initScrollToTop() -
+   hidden until the reader has scrolled past the hero. */
+.scroll-top-btn {
+  position: fixed; right: 24px; bottom: 24px; z-index: 50;
+  width: 42px; height: 42px; border-radius: 50%; border: none;
+  background: var(--navy-2); color: #fff; font: 700 18px/1 var(--font-sans);
+  cursor: pointer; box-shadow: 0 4px 12px rgba(0, 0, 0, .25);
+  opacity: 0; pointer-events: none; transform: translateY(6px);
+  transition: opacity .15s ease, transform .15s ease;
+}
+.scroll-top-btn.visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
+.scroll-top-btn:hover { background: var(--teal-1, #0E7C7B); }
+
+/* ---- 5. JABS GUI mockup ---- */
+.jabs-card { border: 1px solid #000; background: #181818; border-radius: 10px; overflow: hidden; margin-top: 16px; }
+.jabs-topbar {
+  position: relative; display: flex; align-items: center; justify-content: space-between;
+  padding: 6px 12px; background: #111; color: #ddd; border-bottom: 1px solid #2a2a2a;
+}
+.jabs-topbar strong { font: 600 12px var(--font-sans); }
+.jabs-topbar .menu { display: flex; gap: 14px; font: 400 11.5px var(--font-sans); color: #aaa; }
+
+.jabs-body { display: flex; flex-wrap: wrap; }
+
+.jabs-videolist { width: 110px; flex: none; background: #161616; border-right: 1px solid #2a2a2a; padding: 8px; }
+.jabs-videolist .heading { font: 600 10.5px var(--font-sans); color: #ccc; margin-bottom: 6px; }
+.jabs-videolist .items { font: 400 9.5px var(--font-sans); color: #8a8a8a; line-height: 1.9; }
+.jabs-videolist .items .selected { background: #5b3fa0; color: #fff; border-radius: 3px; padding: 1px 4px; }
+
+.jabs-video-col { flex: 1; min-width: 260px; padding: 14px; background: #181818; }
+.video-frame {
+  position: relative; width: 100%; aspect-ratio: 16 / 10;
+  border-radius: 4px; overflow: hidden; background: #000;
+  display: flex; align-items: center; justify-content: center; border: 1px dashed #444;
+}
+.video-frame .placeholder-text { color: #666; font: 400 12px var(--font-sans); }
+.frame-badge {
+  position: absolute; top: 8px; right: 8px;
+  background: #c0392b; color: #fff; font: 600 11px var(--font-sans);
+  width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+}
+.speed-badge {
+  background: rgba(0, 0, 0, .6); color: #fff;
+  font: 600 10.5px var(--font-sans); padding: 2px 7px; border-radius: 3px;
+}
+.video-tools { position: absolute; bottom: 6px; right: 6px; display: flex; gap: 4px; }
+.video-tools .tool {
+  width: 20px; height: 20px; background: rgba(0, 0, 0, .6); border-radius: 3px;
+  display: flex; align-items: center; justify-content: center; color: #ddd; font: 400 10px var(--font-sans);
+}
+
+.zoom-cursor { position: absolute; z-index: 3; color: var(--highlight); font-size: 14px; opacity: 0; animation: jabsZoomCursor 5s ease-in-out infinite; }
+.zoom-box { position: absolute; z-index: 2; border: 2px dashed var(--orange-2); animation: jabsZoomBox 5s ease-in-out infinite; }
+@keyframes jabsZoomCursor {
+  0%, 6% { left: 86%; top: 90%; opacity: 0; }
+  10% { opacity: 1; }
+  22% { left: 86%; top: 90%; opacity: 1; }
+  24% { left: 86%; top: 90%; opacity: 1; transform: translate(-50%, -50%) scale(.7); }
+  27% { transform: translate(-50%, -50%) scale(1); }
+  42% { left: 58%; top: 18%; opacity: 1; }
+  78% { left: 90%; top: 58%; opacity: 1; }
+  92%, 100% { left: 90%; top: 58%; opacity: 0; }
+}
+@keyframes jabsZoomBox {
+  0%, 42% { opacity: 0; left: 58%; top: 18%; width: 0; height: 0; }
+  44% { opacity: 1; left: 58%; top: 18%; width: 0; height: 0; }
+  78%, 92% { opacity: 1; left: 58%; top: 18%; width: 32%; height: 40%; }
+  100% { opacity: 0; left: 58%; top: 18%; width: 32%; height: 40%; }
+}
+
+.timecode { display: flex; justify-content: space-between; font: 400 10.5px var(--font-mono); color: #8a8a8a; margin-top: 6px; }
+.timeline-wrap { position: relative; margin-top: 4px; }
+.timeline-label { font: 600 9.5px var(--font-sans); color: #8a8a8a; margin: 6px 0 2px; }
+.timeline-lead { height: 8px; background: #c0392b; width: 9%; border-radius: 2px 0 0 2px; }
+.timeline-bar { height: 16px; background: #2a2a2a; display: flex; align-items: center; }
+.seg-behavior { height: 100%; background: var(--orange-2); }
+.seg-not { height: 100%; background: var(--blue-1); }
+
+.jabs-rightpanel { width: 210px; flex: none; padding: 12px; background: #181818; border-left: 1px solid #2a2a2a; color: #ddd; }
+.panel-box { border: 1px solid #3a3a3a; border-radius: 4px; padding: 8px; margin-bottom: 10px; position: relative; }
+.panel-box .heading { font: 500 9.5px var(--font-sans); color: #999; margin-bottom: 5px; }
+.panel-field { background: #222; border: 1px solid #3a3a3a; border-radius: 3px; padding: 4px 6px; font: 400 10.5px var(--font-sans); }
+.panel-row { display: flex; gap: 4px; margin-bottom: 4px; }
+.panel-row .grow { flex: 1; }
+.panel-row .plus { width: 18px; text-align: center; font: 400 10px var(--font-sans); }
+
+.jabs-btn { font: 600 11.5px/1 var(--font-sans); padding: 8px 14px; border-radius: 6px; border: none; cursor: default; }
+.jabs-btn.small { font-size: 10.5px; padding: 5px; flex: 1; background: #2a2a2a; color: #ddd; border: 1px solid #3a3a3a; }
+.jabs-btn.dark { background: #2a2a2a; color: #ddd; border: 1px solid #3a3a3a; }
+
+.classifier-row { display: flex; justify-content: space-between; font: 400 10px var(--font-sans); color: #999; margin-bottom: 5px; }
+.checkbox-row { font: 400 10px var(--font-sans); color: #999; display: flex; gap: 5px; margin-bottom: 3px; align-items: center; }
+.checkbox-row .box { width: 10px; height: 10px; border: 1px solid #555; border-radius: 2px; display: inline-block; }
+
+.kfold-label { font: 400 10px var(--font-sans); color: #999; margin-bottom: 3px; }
+.kfold-track { position: relative; height: 3px; background: #3a3a3a; border-radius: 2px; margin: 7px 2px; }
+.kfold-thumb { position: absolute; top: 50%; left: 10%; width: 9px; height: 9px; background: var(--highlight); border-radius: 50%; transform: translate(-50%, -50%); }
+.kfold-range { display: flex; justify-content: space-between; font: 400 9px var(--font-mono); color: #777; margin-bottom: 6px; }
+.kfold-caption { font: 400 9.5px var(--font-sans); color: var(--orange-2); line-height: 1.4; margin: 2px 0 6px; }
+
+.label-summary-grid { font: 400 9.5px var(--font-sans); color: #aaa; display: grid; grid-template-columns: 1fr 30px 30px; row-gap: 2px; }
+.label-summary-grid .col-head { color: #777; }
+
+.label-buttons { display: flex; flex-direction: column; gap: 5px; }
+.label-buttons .grooming { background: var(--orange-2); color: #1a1200; font-size: 10.5px; }
+.label-buttons .not-grooming { background: var(--blue-1); color: #fff; font-size: 10.5px; }
+
+/* ---- 6. Walkthrough mechanics ---- */
+.hl-region { position: relative; }
+.hl-overlay {
+  position: absolute; inset: -3px; border-radius: 4px;
+  border: 2px solid var(--highlight); box-shadow: 0 0 0 4px rgba(255, 214, 90, .22);
+  opacity: 0; transition: opacity .25s ease; pointer-events: none;
+}
+.hl-region.hl-active .hl-overlay { opacity: 1; }
+
+.practice-note { margin-top: 14px; background: var(--bg-alt); border-radius: 6px; padding: 10px 14px; }
+.practice-note .kicker { font: 700 10.5px var(--font-sans); color: var(--teal-1); text-transform: uppercase; letter-spacing: .04em; }
+.practice-note .body { font: 600 12.5px var(--font-sans); color: var(--text-head); margin-top: 4px; }
+
+.step-pills { display: flex; gap: 8px; margin-top: 16px; align-items: center; flex-wrap: wrap; }
+.step-pill {
+  width: 30px; height: 30px; border-radius: 50%; border: none; cursor: pointer;
+  font: 600 12px var(--font-mono); background: #EEF1F2; color: var(--navy-2);
+}
+.step-pill.active { background: var(--teal-1); color: #fff; }
+.step-pills .hint { font: 400 12px var(--font-sans); color: var(--text-muted); margin-left: 8px; }
+
+.step-detail { margin-top: 14px; background: var(--bg-alt); border-radius: 10px; padding: 16px 20px; }
+.step-detail .kicker { font: 700 11px var(--font-sans); color: var(--teal-1); text-transform: uppercase; letter-spacing: .05em; }
+.step-detail h2, .step-detail h3 { font-size: 16px; margin-top: 5px; }
+.step-detail p { font: 400 13px/1.6 var(--font-sans); color: var(--text-muted); margin-top: 6px; }
+
+/* ---- 7. Rendered notebook content ----
+   Targets the raw class names nbconvert's "basic" template emits per cell -
+   that template produces no CSS of its own (unlike "lab"/"classic"), so
+   every rule a rendered notebook needs to look like part of this site lives
+   here. Pair with pygments.css for code syntax highlighting. */
+
+.nb-body { font: 400 15px/1.7 var(--font-sans); color: var(--text-body); }
+.nb-body .cell { margin: 0 0 18px; }
+
+.nb-body .text_cell_render {
+  font: 400 15px/1.7 var(--font-sans);
+  color: var(--text-body);
+}
+.nb-body .text_cell_render h1,
+.nb-body .text_cell_render h2,
+.nb-body .text_cell_render h3,
+.nb-body .text_cell_render h4 {
+  font-family: var(--font-serif);
+  color: var(--text-head);
+  margin: 28px 0 10px;
+}
+.nb-body .text_cell_render h1 { font-size: 28px; margin-top: 0; }
+.nb-body .text_cell_render h2 { font-size: 21px; }
+.nb-body .text_cell_render h3 { font-size: 17px; }
+.nb-body .text_cell_render p { margin: 10px 0; }
+.nb-body .text_cell_render ul, .nb-body .text_cell_render ol { padding-left: 22px; }
+.nb-body .text_cell_render a.anchor-link { text-decoration: none; color: var(--text-muted); opacity: 0; margin-left: 6px; }
+.nb-body .text_cell_render h1:hover a.anchor-link,
+.nb-body .text_cell_render h2:hover a.anchor-link,
+.nb-body .text_cell_render h3:hover a.anchor-link,
+.nb-body .text_cell_render h4:hover a.anchor-link { opacity: 1; }
+.nb-body .text_cell_render blockquote {
+  margin: 14px 0; padding: 10px 16px;
+  border-left: 3px solid var(--teal-1);
+  background: var(--bg-alt);
+  color: var(--text-body);
+}
+/* Markdown-embedded images (![]()), e.g. the keypoint reference diagram - the
+   output_png/output_jpeg rules below only cover code-cell outputs, so a
+   full-size SVG/PNG dropped into a markdown cell had no width constraint at
+   all and overflowed the page. */
+.nb-body .text_cell_render img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 12px auto;
+  border-radius: 6px;
+}
+
+/* Code cells */
+.nb-body .code_cell { margin: 14px 0; }
+.nb-body .input_area {
+  background: #F7F5EF;
+  border: 1px solid #E7E4DA;
+  border-radius: 8px;
+  padding: 12px 14px;
+  overflow-x: auto;
+}
+.nb-body .input_area pre {
+  margin: 0;
+  font: 400 13px/1.5 var(--font-mono);
+  white-space: pre-wrap;
+}
+.nb-body .prompt {
+  display: none; /* "In [1]:" / "Out[1]:" prompts add noise without adding value for a read-only site */
+}
+
+/* Output area */
+.nb-body .output_area { margin: 10px 0 0; }
+.nb-body .output_subarea { max-width: 100%; }
+.nb-body .output_text pre {
+  margin: 0;
+  padding: 10px 14px;
+  background: #FBFAF7;
+  border: 1px solid #EEEBE2;
+  border-radius: 8px;
+  font: 400 12.5px/1.5 var(--font-mono);
+  white-space: pre-wrap;
+  color: var(--text-body);
+}
+.nb-body .output_subarea.output_stderr pre { border-color: #E8B4A0; background: #FBEFE9; }
+.nb-body .output_png img,
+.nb-body .output_jpeg img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 12px auto;
+  border-radius: 6px;
+}
+
+/* Pandas DataFrame tables */
+.nb-body table.dataframe {
+  border-collapse: collapse;
+  margin: 12px 0;
+  font: 400 12.5px/1.4 var(--font-sans);
+}
+.nb-body table.dataframe th {
+  background: var(--navy-2); color: #fff;
+  padding: 6px 10px; text-align: left; font-weight: 600;
+}
+.nb-body table.dataframe td { padding: 5px 10px; border-bottom: 1px solid #EEEBE2; }
+.nb-body table.dataframe tr:nth-child(even) td { background: var(--bg-alt); }
+
+/* Understanding Checkpoint / Challenge Question callouts already authored in
+   notebook markdown as blockquotes with a leading bold label - no extra
+   markup needed beyond the blockquote styling above.  */

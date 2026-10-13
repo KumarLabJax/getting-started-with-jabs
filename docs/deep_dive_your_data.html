@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your Own Data! - Getting Started with JABS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="_shared/design-system.css">
+<link rel="stylesheet" href="_shared/pygments.css">
+</head>
+<body>
+
+<div class="page">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <span class="sidebar-brand sidebar-label">From Pose to Behavior: A Hands-On Introduction to JABS</span>
+      <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">&lsaquo;</button>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="00_setup_and_orientation.html" class="sidebar-label">Setup and Orientation</a>
+      <a href="01_data_ingestion.html" class="sidebar-label">Data Ingestion</a>
+      <a href="03_precomputed_tracking.html" class="sidebar-label">Precomputed Tracking & QC</a>
+      <a href="04_jabs_classification.html" class="sidebar-label">Annotation and Classification with JABS</a>
+      <a href="05_results_and_analysis.html" class="sidebar-label">Results and Analysis</a>
+      <div class="sidebar-heading sidebar-label">Live Workflow</div>
+      <a href="live_demo.html" class="sidebar-label">JABS Demo</a>
+      <a href="live_demo_jabs_gui_walkthrough.html" class="sidebar-label">JABS GUI Walkthrough</a>
+      <div class="sidebar-heading sidebar-label">Deep Dives</div>
+      <a href="02_pose_estimation.html" class="sidebar-label">Pose Estimation</a>
+      <a href="deep_dive_dataverse.html" class="sidebar-label">Dataverse Dataset</a>
+      <a href="deep_dive_your_data.html" class="active sidebar-label">Your Own Data!</a>
+      <ul class="sidebar-toc sidebar-label">
+        <li><a href="#Learning-Goals">Learning Goals</a></li>
+        <li><a href="#Is-This-Page-For-You?">Is This Page For You?</a></li>
+        <li><a href="#The-Official-JABS-Pipeline">The Official JABS Pipeline</a></li>
+        <li><a href="#Step-1:-Check-Your-Recording-Setup">Step 1: Check Your Recording Setup</a></li>
+        <li><a href="#Step-2:-Generate-Pose-Estimates-from-Your-Video">Step 2: Generate Pose Estimates from Your Video</a></li>
+        <li><a href="#Step-3:-Quality-check-Your-Pose-Files">Step 3: Quality-check Your Pose Files</a></li>
+        <li><a href="#Step-4:-Annotate,-Train,-and-Classify">Step 4: Annotate, Train, and Classify</a></li>
+        <li><a href="#Step-5:-Analyze-Your-Results">Step 5: Analyze Your Results</a></li>
+        <li><a href="#Contact">Contact</a></li>
+        <li><a href="#Resources">Resources</a></li>
+        <li><a href="#What-Next">What Next</a></li>
+      </ul>
+    </nav>
+    <div class="sidebar-footer sidebar-label">Short Course on the Application of Machine Learning for Automated Quantification of Behavior<br>JAX &middot; Oct 11&ndash;16, 2026</div>
+  </aside>
+
+  <div class="main">
+
+    <div class="hero">
+      <div class="eyebrow">Deep Dive</div>
+      <h1>Your Own Data!</h1>
+    </div>
+
+    <section>
+      <div class="nb-body">
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=0"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Estimated time to read:</strong> 10 minutes
+<strong>Depends on:</strong> Data Ingestion, Precomputed Tracking &amp; QC, JABS Demo
+<strong>Audience:</strong> anyone with their own open-field-arena (OFA) recordings who wants to run them through this course's workflow, not just the example dataset</p>
+<p>This page is not a notebook you run - it is a map. Everything else in this module works with
+one curated example dataset. This page is for when you are ready to point the same pipeline at <strong>your own mouse
+video data</strong>.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=1"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Learning-Goals">Learning Goals<a class="anchor-link" href="#Learning-Goals">¶</a></h2><p>By the end of this page, you should be able to:</p>
+<ul>
+<li>Name the four stages of the official JABS pipeline (data acquisition, pose estimation,
+annotation and classifier training, genetic analysis) and which tool handles each</li>
+<li>Recognize what your own open-field-arena recordings need to look like to work with this pipeline</li>
+<li>Locate the Kumar Lab tools that turn raw video into JABS-compatible pose files</li>
+<li>Map your own data onto the same ingestion -&gt; QC -&gt; annotation -&gt; classification -&gt; analysis
+workflow this course walks through</li>
+<li>Know where to go for help if your data does not fit the expected format</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=2"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Is-This-Page-For-You?">Is This Page For You?<a class="anchor-link" href="#Is-This-Page-For-You?">¶</a></h2><p>This page is for you if:</p>
+<ul>
+<li>You have your own open-field-arena video of mice (or a similar single-animal, top-down
+recording setup)</li>
+<li>You want to annotate and classify a behavior using JABS, the way this course demonstrates</li>
+<li>You do not yet have pose-estimation keypoints for your video</li>
+</ul>
+<p>If you already have JABS-format pose files (<code>*_pose_est_v6.h5</code>), skip ahead to
+<a href="03_precomputed_tracking.html">Precomputed Tracking &amp; QC</a> - the same code runs on your files
+wherever this course's pages point at <code>data/</code>.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=3"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="The-Official-JABS-Pipeline">The Official JABS Pipeline<a class="anchor-link" href="#The-Official-JABS-Pipeline">¶</a></h2><p>JABS is published as a four-stage, end-to-end pipeline, each stage handled by its own tool
+(Choudhary, A., Geuther, B. Q., Sproule, T. J., Beane, G., Kohar, V., Trapszo, J., &amp; Kumar, V., "JAX Animal Behavior System (JABS), a genetics-informed, end-to-end advanced
+behavioral phenotyping platform for the laboratory mouse," eLife 107259 (2026),
+<a href="https://elifesciences.org/articles/107259">elifesciences.org/articles/107259</a>):</p>
+<table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>Module</th>
+<th>Tool</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Data acquisition</td>
+<td>JABS-DA</td>
+<td><a href="https://github.com/KumarLabJax/JABS-data-pipeline">JABS-data-pipeline</a></td>
+</tr>
+<tr>
+<td>Pose estimation</td>
+<td>-</td>
+<td><a href="https://github.com/KumarLabJax/mouse-tracking-runtime">mouse-tracking-runtime</a></td>
+</tr>
+<tr>
+<td>Behavioral annotation &amp; classifier training</td>
+<td>JABS-AL</td>
+<td><a href="https://github.com/KumarLabJax/JABS-behavior-classifier">JABS-behavior-classifier</a></td>
+</tr>
+<tr>
+<td>Genetic analysis</td>
+<td>JABS-AI</td>
+<td>(deploys trained classifiers across large genetic cohorts - not covered by this course)</td>
+</tr>
+</tbody>
+</table>
+<p>Steps 1-4 below walk you through the first three stages using your own data. The fourth stage,
+JABS-AI, is about running a classifier across a large-scale genetic dataset to find genetic
+drivers of behavior - a different scale of problem than this course's own
+<a href="05_results_and_analysis.html">Results and Analysis</a> page, which evaluates a single classifier
+against ground truth. If you get as far as wanting to do genetics-scale analysis, JABS-AI is
+where that work lives, but it is out of scope for this page.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=4"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Step-1:-Check-Your-Recording-Setup">Step 1: Check Your Recording Setup<a class="anchor-link" href="#Step-1:-Check-Your-Recording-Setup">¶</a></h2><p>This is the <strong>data acquisition</strong> stage (JABS-DA) - the <a href="https://github.com/KumarLabJax/JABS-data-pipeline">JABS-data-pipeline</a> repo has the hardware build guide if you are setting up a new rig from scratch.</p>
+<p><strong>Arena, lighting, and camera</strong> (Geuther, B.Q., Deats, S.P., Fox, K.J., Murray, S.A., Braun, R.E.,
+White, J.K., Chesler, E.J., Lutz, C.M., Kumar, V. "Robust mouse tracking in complex environments
+using neural networks." Communications Biology 2, 124 (2019).
+<a href="https://doi.org/10.1038/s42003-019-0362-1">doi:10.1038/s42003-019-0362-1</a>):</p>
+<ul>
+<li>52 cm x 52 cm x 23 cm arena - white PVC plastic floor, gray PVC plastic walls, with a 2.54 cm
+chamfer on all inner edges (aids cleaning)</li>
+<li>LED ring light (F&amp;V R300), calibrated to 600 lux</li>
+<li>Sentech STC-MB33USB camera with a Computar T3Z2910CS-IR lens, mounted about 100 cm above the
+arena, zoomed to 8 px/cm</li>
+<li>640x480 px, 8-bit monochrome, 30 fps (cropped to 480x480 px for analysis)</li>
+<li>Single animal, top-down view only - the pipeline is not validated for multiple animals in
+frame</li>
+<li>A subset of arenas are set up for continuous 24-hour monitoring on a 12:12 light-dark cycle:
+250 lux during the day, under 5 lux at night, with additional 940 nm IR LED lighting for night
+recording</li>
+</ul>
+<p>This same arena and the cropped 480x480 px @ 30 fps format are reused in later Kumar Lab
+publications, e.g. Sheppard, K., Gardin, J., Sabnis, G.S., Peer, A., Darrell, M., Deats, S.,
+Geuther, B., Lutz, C.M., Kumar, V. "Stride-level analysis of mouse open field behavior using
+deep-learning-based pose estimation." Cell Reports 38, 110231 (2022).
+<a href="https://doi.org/10.1016/j.celrep.2021.110231">doi:10.1016/j.celrep.2021.110231</a>.</p>
+<p>Your video needs to reasonably match this setup for the pose model to produce usable keypoints;
+a substantially different camera angle, arena size, or lighting will degrade pose quality in
+ways the <a href="03_precomputed_tracking.html">Precomputed Tracking &amp; QC</a> page's checks are designed to
+catch, not prevent.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=5"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Step-2:-Generate-Pose-Estimates-from-Your-Video">Step 2: Generate Pose Estimates from Your Video<a class="anchor-link" href="#Step-2:-Generate-Pose-Estimates-from-Your-Video">¶</a></h2><p>This is the <strong>pose estimation</strong> stage. Your video needs to become a JABS-format pose file before anything else in this course applies.
+The Kumar Lab's <a href="https://github.com/KumarLabJax/mouse-tracking-runtime">mouse-tracking-runtime</a>
+pipeline does exactly this: it runs a trained pose-estimation model on your video and writes out
+a <code>poseest/</code> HDF5 file with <code>points</code> and <code>confidence</code> in the same 12-keypoint schema used
+throughout this course.</p>
+<ul>
+<li>For the schema itself (what <code>points</code> and <code>confidence</code> mean, and why the keypoints are ordered
+the way they are), see <a href="01_data_ingestion.html">Data Ingestion</a>.</li>
+<li>For how a confidence map actually becomes a keypoint and a confidence value, see the
+<a href="02_pose_estimation.html">Pose Estimation deep dive</a>.</li>
+</ul>
+<p>Follow the <code>mouse-tracking-runtime</code> repository's own setup instructions to run it against your
+video - that pipeline, not this course, is where a pose model actually gets applied to new data.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=6"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Step-3:-Quality-check-Your-Pose-Files">Step 3: Quality-check Your Pose Files<a class="anchor-link" href="#Step-3:-Quality-check-Your-Pose-Files">¶</a></h2><p>Once you have pose files for your own sessions, run them through the same QC this course applies
+to its example dataset. <a href="03_precomputed_tracking.html">Precomputed Tracking &amp; QC</a> auto-detects
+whichever <code>data/</code> subfolder you point it at (<code>data_subdir</code>) - drop your own pose files into a
+folder there and the same thresholds, histograms, and per-keypoint reliability checks run
+unchanged. Pay particular attention to the per-keypoint reliability chart: a keypoint that is
+unreliable on your setup but fine on the course's example data is a sign your recording setup
+differs from what the pose model expects.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=7"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Step-4:-Annotate,-Train,-and-Classify">Step 4: Annotate, Train, and Classify<a class="anchor-link" href="#Step-4:-Annotate,-Train,-and-Classify">¶</a></h2><p>This is the <strong>behavioral annotation and classifier training</strong> stage - JABS-AL. With QC-passed sessions, follow <a href="live_demo.html">JABS Demo</a> to open your data
+in the JABS GUI, label a behavior, train a classifier, and run it - the same walkthrough this
+course uses for its own example behavior (grooming) applies to whatever behavior you choose to
+label in your data.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=8"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Step-5:-Analyze-Your-Results">Step 5: Analyze Your Results<a class="anchor-link" href="#Step-5:-Analyze-Your-Results">¶</a></h2><p>Once you have classifier predictions on your own sessions,
+<a href="05_results_and_analysis.html">Results and Analysis</a> walks through turning them into
+ethograms, bout-duration distributions, and classifier evaluation metrics - again, the same code,
+run on your own predictions instead of the course's example set.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=9"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Contact">Contact<a class="anchor-link" href="#Contact">¶</a></h2><p>If your data does not fit the setup above, or you run into trouble applying JABS to it, the
+Kumar Lab maintains a support address for exactly this: <strong>jabs@jax.org</strong> (from the
+<a href="https://github.com/KumarLabJax/JABS-behavior-classifier">JABS-behavior-classifier README</a>).
+That same README notes that multi-mouse support is still under development - contact them
+directly if that is your use case.</p>
+<p>The tool itself is developed and maintained at <a href="https://www.jax.org/">The Jackson Laboratory</a>
+by the <a href="https://www.kumarlab.org/">Kumar Lab</a>.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=10"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Resources">Resources<a class="anchor-link" href="#Resources">¶</a></h2><ul>
+<li><a href="https://github.com/KumarLabJax/JABS-data-pipeline">JABS-data-pipeline</a> - data acquisition (JABS-DA): hardware build guide and recording setup</li>
+<li><a href="https://github.com/KumarLabJax/mouse-tracking-runtime">mouse-tracking-runtime</a> - pose
+estimation on your own video</li>
+<li><a href="https://github.com/KumarLabJax/JABS-behavior-classifier">JABS-behavior-classifier</a> - the JABS
+GUI and CLI tools</li>
+<li><a href="https://jabs-tutorial.readthedocs.io/en/latest/">JABS documentation</a> - full JABS reference</li>
+<li><a href="https://www.kumarlab.org/">Kumar Lab</a> - lab homepage, publications, and protocols</li>
+<li>JABS-AI - the genetic-analysis stage (deploying classifiers across large genetic cohorts);
+see the JABS paper above for details - out of scope for this page</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=11"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="What-Next">What Next<a class="anchor-link" href="#What-Next">¶</a></h2><p>This page only maps the path from your own video to a trained classifier - the actual pipeline
+runs happen outside this course, since they depend on your own hardware, video, and behavior of
+interest. If you get stuck at any single stage, the pages linked above go into far more depth on
+that stage than this page does.</p>
+</div>
+</div>
+</div>
+
+      </div>
+    </section>
+
+    <div class="page-footer">
+      <span><a href="https://www.kumarlab.org/">Kumar Lab</a> &middot; <a href="https://www.jax.org/">The Jackson Laboratory</a> &middot; <a href="https://www.jax.org/education-and-learning/education-calendar/2026/10-october/machine-learning-for-automated-quantification-of-behavior-short-course">Short Course on the Application of Machine Learning for Automated Quantification of Behavior</a></span>
+      <span>Oct 11&ndash;16, 2026</span>
+    </div>
+
+  </div>
+</div>
+
+<script src="_shared/site.js"></script>
+<script>
+  JabsSite.initSidebarToggle();
+  JabsSite.initScrollToTop();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Setup and Orientation - Getting Started with JABS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="_shared/design-system.css">
+<link rel="stylesheet" href="_shared/pygments.css">
+</head>
+<body>
+
+<div class="page">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <span class="sidebar-brand sidebar-label">From Pose to Behavior: A Hands-On Introduction to JABS</span>
+      <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">&lsaquo;</button>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="00_setup_and_orientation.html" class="active sidebar-label">Setup and Orientation</a>
+      <ul class="sidebar-toc sidebar-label">
+        <li><a href="#Learning-Goals">Learning Goals</a></li>
+        <li><a href="#What-Is-JABS?">What Is JABS?</a></li>
+        <li><a href="#Module-Overview">Module Overview</a></li>
+        <li><a href="#The-Dataset">The Dataset</a></li>
+        <li><a href="#How-This-Content-Is-Organized">How This Content Is Organized</a></li>
+        <li><a href="#Environment-Setup">Environment Setup</a></li>
+        <li><a href="#Repository-Tour">Repository Tour</a></li>
+        <li><a href="#Understanding-Checkpoint:-Environment">Understanding Checkpoint: Environment</a></li>
+        <li><a href="#Understanding-Checkpoint:-Dataset-and-Pipeline">Understanding Checkpoint: Dataset and Pipeline</a></li>
+        <li><a href="#Challenge-Questions">Challenge Questions</a></li>
+        <li><a href="#Background-Resources">Background Resources</a></li>
+        <li><a href="#AI-Use-Disclosure">AI Use Disclosure</a></li>
+        <li><a href="#Next-Steps">Next Steps</a></li>
+      </ul>
+      <a href="01_data_ingestion.html" class="sidebar-label">Data Ingestion</a>
+      <a href="03_precomputed_tracking.html" class="sidebar-label">Precomputed Tracking & QC</a>
+      <a href="04_jabs_classification.html" class="sidebar-label">Annotation and Classification with JABS</a>
+      <a href="05_results_and_analysis.html" class="sidebar-label">Results and Analysis</a>
+      <div class="sidebar-heading sidebar-label">Live Workflow</div>
+      <a href="live_demo.html" class="sidebar-label">JABS Demo</a>
+      <a href="live_demo_jabs_gui_walkthrough.html" class="sidebar-label">JABS GUI Walkthrough</a>
+      <div class="sidebar-heading sidebar-label">Deep Dives</div>
+      <a href="02_pose_estimation.html" class="sidebar-label">Pose Estimation</a>
+      <a href="deep_dive_dataverse.html" class="sidebar-label">Dataverse Dataset</a>
+      <a href="deep_dive_your_data.html" class="sidebar-label">Your Own Data!</a>
+    </nav>
+    <div class="sidebar-footer sidebar-label">Short Course on the Application of Machine Learning for Automated Quantification of Behavior<br>JAX &middot; Oct 11&ndash;16, 2026</div>
+  </aside>
+
+  <div class="main">
+
+    <div class="hero">
+      <h1>Setup and Orientation</h1>
+    </div>
+
+    <section>
+      <div class="nb-body">
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=0"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Estimated time to read:</strong> 10-15 minutes
+<strong>Depends on:</strong> Nothing - this is the entry point
+<strong>Unlocks:</strong> Everything else in this module</p>
+<p>Welcome to <em>Getting Started with JABS</em>. This page is about <strong>orientation</strong>: understanding what JABS is, how the module is structured, and what you will need before the hands-on portion.</p>
+<p>This page is precomputed - you are reading rendered output, not running anything yourself. The one part of this module you do run yourself is the live hands-on JABS workflow, described in the Module Overview below.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=1"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Learning-Goals">Learning Goals<a class="anchor-link" href="#Learning-Goals">¶</a></h2><p>By the end of this page, you should be able to:</p>
+<ul>
+<li>Explain what JABS does and what problem it solves - turning pose data into behavior labels</li>
+<li>Describe the two tracks this module offers (this precomputed site vs. the live hands-on workflow) and which one applies to you</li>
+<li>Identify the dataset this module uses and why it was chosen</li>
+<li>Locate environment setup instructions and find your way around the repository</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=2"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="What-Is-JABS?">What Is JABS?<a class="anchor-link" href="#What-Is-JABS?">¶</a></h2><p><strong>JABS</strong> (the JAX Animal Behavior System) is an open-source tool from the <a href="https://www.kumarlab.org/">Kumar Lab</a> for <strong>labeling and classifying animal behavior from pose data</strong>. Instead of scoring hours of video by hand, you annotate a modest number of example frames for a behavior of interest, and JABS trains a machine-learning classifier to find that behavior across the rest of your data.</p>
+<blockquote>
+<p>"JABS is a machine learning-based tool for automatically identifying and classifying animal behaviors in video recordings... it uses pose estimation data to extract features and train classifiers that can recognize specific behaviors across multiple animals and videos."</p>
+<ul>
+<li><a href="https://kumarlabjax.github.io/JABS-behavior-classifier/user-guide/overview/">JABS documentation, User Guide: Overview</a></li>
+</ul>
+</blockquote>
+<p><strong>JABS is an active learning system.</strong> You label a few examples, train, see where the classifier disagrees with you, label there next, and retrain - each round needs less labeling than the last. That loop, not a one-shot "label everything up front," is what makes it practical to build a working classifier from a laptop.</p>
+<p>The pipeline this module follows:</p>
+<pre><code>video  -&gt;  pose estimation  -&gt;  feature extraction  -&gt;  behavior classifier  -&gt;  behavior labels
+              (keypoints)          (JABS)                (this course: XGBoost)     (ethograms)
+</code></pre>
+<p>JABS supports three classifier algorithms - it does not require a deep neural network. Per the <a href="https://kumarlabjax.github.io/JABS-behavior-classifier/user-guide/classifier-types/">JABS documentation, User Guide: Classifier Types</a>:</p>
+<blockquote>
+<p>"Random Forest is the default classifier and a good starting point for most users."
+"CatBoost is a gradient boosting algorithm that can achieve excellent performance, particularly for complex behaviors."
+"XGBoost is another gradient boosting algorithm known for winning machine learning competitions."</p>
+</blockquote>
+<p>This course's classifiers use <strong>XGBoost</strong>, chosen for this dataset and behavior - not because it's JABS's default. All three are tree-based models: they work well on the structured features JABS computes from keypoints (distances, angles, speeds), train quickly on modest hardware, and need far less labeled data than deep models - all of which matter for a scientist building a classifier on a laptop.</p>
+<p>This module walks that pipeline using one curated example dataset. If you have your own open-field-arena recordings and want to run them through the same pipeline, see the <a href="deep_dive_your_data.html">Your Own Data!</a> deep dive.</p>
+<p>You will use the JABS GUI yourself to annotate a behavior and train a classifier in the live hands-on workflow - either live, in person on a course VM, or async and self-paced (see Module Overview below).</p>
+<blockquote>
+<p><strong>A first note on defining behavior.</strong> Before you can teach a computer to recognize a behavior, you have to define what that behavior <em>is</em>. That sounds simple - until you try to write down exactly when <code>grooming</code> starts and ends, whether a mouse sniffing its own paw counts, and whether two people watching the same video would agree. How clearly you define a behavior before labeling largely determines how well your classifier works. We will return to this when you annotate and train your own classifier.</p>
+</blockquote>
+<p>Choudhary, A., Geuther, B. Q., Sproule, T. J., Beane, G., Kohar, V., Trapszo, J., &amp; Kumar, V. "JAX Animal Behavior System (JABS), a genetics-informed, end-to-end advanced behavioral phenotyping platform for the laboratory mouse." eLife 107259 (2026). Source: <a href="https://github.com/KumarLabJax/JABS-behavior-classifier">https://github.com/KumarLabJax/JABS-behavior-classifier</a></p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=3"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Module-Overview">Module Overview<a class="anchor-link" href="#Module-Overview">¶</a></h2><p>This module has two tracks.</p>
+<h3 id="Precomputed-content-(this-site)">Precomputed content (this site)<a class="anchor-link" href="#Precomputed-content-(this-site)">¶</a></h3><p>Read-only pages covering the concepts and data you need before the hands-on portion:</p>
+<pre><code>Setup and Orientation     What JABS is, how the module is structured (this page)
+        |
+        v
+Data Ingestion            Explore real pose data from the Zenodo JABS example dataset
+        |
+        v
+Precomputed Tracking      Work with provided pose/tracking files at scale
+        |
+        v
+Annotation &amp; Classify     Conceptual intro to the JABS annotate/train/classify loop,
+                           and how to install JABS and open a project
+        |
+        v
+Results and Analysis      Turn classifier output into ethograms and statistical summaries
+</code></pre>
+<p>Three pages are <strong>deep dives</strong>, not required reading in the main sequence - Pose Estimation
+(how keypoints are produced from video), a Dataverse Dataset reference, and Your Own Data! (how to
+apply this pipeline to your own recordings). All three are linked from the sidebar under Deep
+Dives and cross-referenced from the pages above where relevant.</p>
+<h3 id="The-live-hands-on-workflow">The live hands-on workflow<a class="anchor-link" href="#The-live-hands-on-workflow">¶</a></h3><p>One notebook, run for real - either live, in person, on a course VM (already set up, JABS
+preinstalled), or async and self-paced on your own machine. It covers, in order:</p>
+<ol>
+<li><strong>Landing</strong> - a quick refresher on the pose data structure covered above</li>
+<li><strong>Live annotation</strong> - label a behavior and train a classifier in the JABS GUI</li>
+<li><strong>Headless tools and analysis</strong> - run your trained classifier and evaluate it against a
+real, densely-reviewed ground-truth session</li>
+</ol>
+<p>Both paths run the same notebook - see the Live Workflow page (its own entry in the
+sidebar, separate from the precomputed pages above) for details.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=4"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="The-Dataset">The Dataset<a class="anchor-link" href="#The-Dataset">¶</a></h2><p>This module works with the <strong>JABS Behavior Classifier Example Projects</strong> published on Zenodo - a curated set of annotated behavioral sessions from single mice, with pose files and behavior labels ready to use.</p>
+<p><strong>Citation:</strong></p>
+<blockquote>
+<p>Geuther, Brian. "JABS Behavior Classifier Example Projects." Zenodo, 2024. <a href="https://doi.org/10.5281/zenodo.16697331">https://doi.org/10.5281/zenodo.16697331</a></p>
+</blockquote>
+<p><strong>License:</strong> CC BY-NC-4.0</p>
+<p>The module also draws on the larger Kumar Lab open-field dataset from Harvard Dataverse for extended examples and context. Full documentation of that dataset is in the <a href="deep_dive_dataverse.html">Dataverse Dataset deep dive</a>.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=5"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="How-This-Content-Is-Organized">How This Content Is Organized<a class="anchor-link" href="#How-This-Content-Is-Organized">¶</a></h2><p>Throughout this module you will see these kinds of content:</p>
+<table>
+<thead>
+<tr>
+<th>Marker</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>(no marker)</td>
+<td>Core content</td>
+</tr>
+<tr>
+<td><strong>Learning Goals</strong></td>
+<td>Opens every page - what you should be able to do by the end of it</td>
+</tr>
+<tr>
+<td><strong>Quick check</strong></td>
+<td>A short, informal prompt right where a concept lands - lighter than an Understanding Checkpoint</td>
+</tr>
+<tr>
+<td><strong>Understanding Checkpoint</strong></td>
+<td>A reflection prompt - pause and work out your own answer before reading on</td>
+</tr>
+<tr>
+<td><strong>Challenge Question</strong></td>
+<td>No single right answer - for deeper exploration</td>
+</tr>
+</tbody>
+</table>
+<p>This page and the other precomputed pages are read-only: the output shown is real, generated
+from the actual toy dataset, but you are not running these cells yourself. The one place you do
+run real code yourself is the live hands-on workflow (see Module Overview above) - that notebook
+is self-contained and includes its own setup instructions.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=6"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Environment-Setup">Environment Setup<a class="anchor-link" href="#Environment-Setup">¶</a></h2><p>This page needs no setup - you are reading precomputed output. Setup only matters for the live
+hands-on workflow, and what you need to do depends on which path you are on.</p>
+<p><strong>Live, in person:</strong> your course VM comes with the environment already set up and JABS
+preinstalled. There is nothing to do here.</p>
+<p><strong>Async, self-paced:</strong> you will set up the environment yourself. This module pins specific
+package versions (see <code>requirements.txt</code>), and its content is tied to that pinned JABS
+environment - if you are using JABS more generally beyond this module, the
+<a href="https://jabs-tutorial.readthedocs.io/en/latest/">JABS tutorial</a> and the
+<a href="https://github.com/KumarLabJax/JABS-behavior-classifier">JABS-behavior-classifier repo</a> are the
+canonical, always-current references.</p>
+<div class="highlight"><pre><span></span><span class="c1"># Create a virtual environment</span>
+python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv
+
+<span class="c1"># Activate it</span>
+<span class="c1"># Windows:</span>
+venv<span class="se">\S</span>cripts<span class="se">\a</span>ctivate
+<span class="c1"># macOS / Linux:</span>
+<span class="nb">source</span><span class="w"> </span>venv/bin/activate
+
+<span class="c1"># Install all required packages</span>
+pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+</pre></div>
+<p>Then start JupyterLab from the same activated terminal:</p>
+<div class="highlight"><pre><span></span>jupyter<span class="w"> </span>lab
+</pre></div>
+<h3 id="Common-failures-(async-setup)">Common failures (async setup)<a class="anchor-link" href="#Common-failures-(async-setup)">¶</a></h3><table>
+<thead>
+<tr>
+<th>Problem</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A package shows <code>[MISSING]</code></td>
+<td><code>pip install -r requirements.txt</code> in the active environment</td>
+</tr>
+<tr>
+<td>A package shows <code>[OUTDATED]</code></td>
+<td><code>pip install --upgrade &lt;package-name&gt;</code></td>
+</tr>
+<tr>
+<td>All packages <code>[MISSING]</code></td>
+<td>Virtual environment is not activated - run the activate command above</td>
+</tr>
+<tr>
+<td><code>jabs</code> shows <code>[MISSING]</code> after install</td>
+<td>Try <code>pip install jabs-behavior-classifier==0.47.1</code> directly</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=7"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Repository-Tour">Repository Tour<a class="anchor-link" href="#Repository-Tour">¶</a></h2><p>This is the trimmed, student-facing repo - a clean copy focused on what you need, not the full
+development history.</p>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>student_notebooks/</code></td>
+<td>The live hands-on workflow notebook, plus optional deep-dive notebooks</td>
+</tr>
+<tr>
+<td><code>static_build_notebooks/</code></td>
+<td>The notebooks that are built into the static course pages (00 to 05)</td>
+</tr>
+<tr>
+<td><code>student_scripts/</code></td>
+<td>Helper scripts (download, environment check, project setup)</td>
+</tr>
+<tr>
+<td><code>data/toy/</code></td>
+<td>A small committed data sample used to generate this site's output</td>
+</tr>
+<tr>
+<td><code>data/zenodo/</code></td>
+<td>JABS annotation examples, downloaded at runtime (not committed)</td>
+</tr>
+<tr>
+<td><code>data/dataverse/</code></td>
+<td>The larger Kumar Lab open-field dataset, downloaded at runtime (optional)</td>
+</tr>
+<tr>
+<td><code>references/</code></td>
+<td>BibTeX citation files and citation style</td>
+</tr>
+<tr>
+<td><code>docs/</code></td>
+<td>This course website</td>
+</tr>
+<tr>
+<td><code>requirements.txt</code></td>
+<td>The Python packages this module needs</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=8"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Understanding-Checkpoint:-Environment">Understanding Checkpoint: Environment<a class="anchor-link" href="#Understanding-Checkpoint:-Environment">¶</a></h2><p>Before moving on, confirm you can answer:</p>
+<ol>
+<li>Which of the two setup paths applies to you - live on a course VM, or async on your own
+machine?</li>
+<li>If you are on the async path, where would you look to see which packages this module
+requires, and how would you fix one that is missing or outdated?</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=9"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Understanding-Checkpoint:-Dataset-and-Pipeline">Understanding Checkpoint: Dataset and Pipeline<a class="anchor-link" href="#Understanding-Checkpoint:-Dataset-and-Pipeline">¶</a></h2><p>Before moving on to Data Ingestion, make sure you can answer these:</p>
+<ol>
+<li>What are the two tracks this module is organized into, and what does each cover?</li>
+<li>What dataset does this module use, and how would you cite it?</li>
+<li>In one sentence: what is JABS, and which step of the pipeline does it handle?</li>
+<li>This module's data is pose files (<code>*_pose_est_v6.h5</code>), not raw video - you will open one
+directly in Data Ingestion. What does a pose file represent, and why is it useful for
+behavior classification rather than working directly from video?</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=10"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Challenge-Questions">Challenge Questions<a class="anchor-link" href="#Challenge-Questions">¶</a></h2><ul>
+<li>This course's classifiers use XGBoost, one of three tree-based algorithms JABS supports (alongside its default, Random Forest, and CatBoost) - none of them a deep neural network. What properties of the keypoint-derived feature space might make gradient-boosted trees a good fit here? What would you want to measure to test that claim?</li>
+<li>The dataset is licensed CC BY-NC-4.0. What does each part of that license - BY (attribution), NC (non-commercial) - require of you if you build on this data in your own research?</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=11"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Background-Resources">Background Resources<a class="anchor-link" href="#Background-Resources">¶</a></h2><p>If you want to build intuition for the methods before or after the hands-on sessions:</p>
+<ul>
+<li><strong>Penn State STAT 857: Applied Machine Learning</strong> - <a href="https://online.stat.psu.edu/stat857/intro/">online.stat.psu.edu/stat857</a> - a free, open course covering supervised learning, model selection, and evaluation including gradient boosting. Penn State's online STAT courses are consistently one of the better places to explore machine learning, math, and statistics in an applied context.</li>
+<li><strong>XGBoost documentation</strong> - <a href="https://xgboost.readthedocs.io/en/stable/">xgboost.readthedocs.io</a> - reference for the classifier algorithm this course uses. The <a href="https://xgboost.readthedocs.io/en/stable/tutorials/model.html">"Introduction to Boosted Trees"</a> tutorial explains what the model is doing under the hood.</li>
+<li><strong>JABS documentation, User Guide: Classifier Types</strong> - <a href="https://kumarlabjax.github.io/JABS-behavior-classifier/user-guide/classifier-types/">kumarlabjax.github.io/JABS-behavior-classifier</a> - the canonical reference for all three classifier algorithms JABS supports (Random Forest, CatBoost, XGBoost) and how to choose between them.</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=11b"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="AI-Use-Disclosure">AI Use Disclosure<a class="anchor-link" href="#AI-Use-Disclosure">¶</a></h2><p>Parts of this module were developed with the assistance of generative AI tools (Claude, by Anthropic, used via Claude Code). AI assistance was used for drafting and editing course content on this site, writing and refactoring helper scripts in <code>student_scripts/</code>, and documentation. All AI-assisted output was reviewed, tested, and edited by the course developers, who remain responsible for the content. The datasets (Zenodo and Harvard Dataverse) are real, publicly available data and were not generated by AI. If you find an error, please contact your course TA.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=12"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Next-Steps">Next Steps<a class="anchor-link" href="#Next-Steps">¶</a></h2><p><strong>Next:</strong> Data Ingestion - explore a sample of the JABS annotation dataset from Zenodo and the
+pose files directly.</p>
+</div>
+</div>
+</div>
+
+      </div>
+    </section>
+    <div class="page-next">
+      <a class="btn-primary" href="01_data_ingestion.html">Data Ingestion &rarr;</a>
+    </div>
+
+
+    <div class="page-footer">
+      <span><a href="https://www.kumarlab.org/">Kumar Lab</a> &middot; <a href="https://www.jax.org/">The Jackson Laboratory</a> &middot; <a href="https://www.jax.org/education-and-learning/education-calendar/2026/10-october/machine-learning-for-automated-quantification-of-behavior-short-course">Short Course on the Application of Machine Learning for Automated Quantification of Behavior</a></span>
+      <span>Oct 11&ndash;16, 2026</span>
+    </div>
+
+  </div>
+</div>
+
+<script src="_shared/site.js"></script>
+<script>
+  JabsSite.initSidebarToggle();
+  JabsSite.initScrollToTop();
+</script>
+
+</body>
+</html>

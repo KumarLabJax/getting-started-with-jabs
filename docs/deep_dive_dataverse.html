@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deep Dive: Dataverse Dataset - Getting Started with JABS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="_shared/design-system.css">
+<link rel="stylesheet" href="_shared/pygments.css">
+</head>
+<body>
+
+<div class="page">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <span class="sidebar-brand sidebar-label">From Pose to Behavior: A Hands-On Introduction to JABS</span>
+      <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">&lsaquo;</button>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="00_setup_and_orientation.html" class="sidebar-label">Setup and Orientation</a>
+      <a href="01_data_ingestion.html" class="sidebar-label">Data Ingestion</a>
+      <a href="03_precomputed_tracking.html" class="sidebar-label">Precomputed Tracking & QC</a>
+      <a href="04_jabs_classification.html" class="sidebar-label">Annotation and Classification with JABS</a>
+      <a href="05_results_and_analysis.html" class="sidebar-label">Results and Analysis</a>
+      <div class="sidebar-heading sidebar-label">Live Workflow</div>
+      <a href="live_demo.html" class="sidebar-label">JABS Demo</a>
+      <a href="live_demo_jabs_gui_walkthrough.html" class="sidebar-label">JABS GUI Walkthrough</a>
+      <div class="sidebar-heading sidebar-label">Deep Dives</div>
+      <a href="02_pose_estimation.html" class="sidebar-label">Pose Estimation</a>
+      <a href="deep_dive_dataverse.html" class="active sidebar-label">Dataverse Dataset</a>
+      <ul class="sidebar-toc sidebar-label">
+        <li><a href="#Learning-Goals">Learning Goals</a></li>
+        <li><a href="#Citation">Citation</a></li>
+        <li><a href="#Dataset-README">Dataset README</a></li>
+        <li><a href="#Data-Description">Data Description</a></li>
+        <li><a href="#Downloading-the-Full-Dataset">Downloading the Full Dataset</a></li>
+      </ul>
+      <a href="deep_dive_your_data.html" class="sidebar-label">Your Own Data!</a>
+    </nav>
+    <div class="sidebar-footer sidebar-label">Short Course on the Application of Machine Learning for Automated Quantification of Behavior<br>JAX &middot; Oct 11&ndash;16, 2026</div>
+  </aside>
+
+  <div class="main">
+
+    <div class="hero">
+      <div class="eyebrow">Deep Dive</div>
+      <h1>Deep Dive: Dataverse Dataset</h1>
+    </div>
+
+    <section>
+      <div class="nb-body">
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=0"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This notebook documents the original Kumar Lab open-field dataset published on Harvard Dataverse. It is <strong>not required</strong> for the main course notebooks - the module uses the Zenodo JABS example projects as the primary working dataset. This page exists as reference material for students who want to understand the larger dataset the Zenodo examples were drawn from, or who plan to use the full video + pose data in their own work.</p>
+<p><strong>When to read this:</strong></p>
+<ul>
+<li>You want to download the full open-field video or pose files</li>
+<li>You are citing the original Kumar Lab dataset in a paper</li>
+<li>You want to understand the 12-keypoint pose schema and HDF5 file structure in depth</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=1"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Learning-Goals">Learning Goals<a class="anchor-link" href="#Learning-Goals">¶</a></h2><p>By the end of this page, you should be able to:</p>
+<ul>
+<li>Cite the original Kumar Lab Harvard Dataverse dataset correctly, including its license terms</li>
+<li>Explain how this dataset relates to the Zenodo JABS example projects used elsewhere in this module</li>
+<li>Know how to download the full dataset if you need more than the working sample</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=2"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Citation">Citation<a class="anchor-link" href="#Citation">¶</a></h2><blockquote>
+<p>Kumar, Vivek; Brian Geuther; Sean Deats, 2024, "The Jackson Laboratory (JAX) - Kumar Lab Mouse Strain Survey of Behavior in the Open Field Arena (Video Dataset)", <a href="https://doi.org/10.7910/DVN/SAPNJG">https://doi.org/10.7910/DVN/SAPNJG</a>, Harvard Dataverse, V1; README.md</p>
+</blockquote>
+<p><strong>License:</strong> CC BY-NC-SA 4.0 (<a href="https://creativecommons.org/licenses/by-nc-sa/4.0">https://creativecommons.org/licenses/by-nc-sa/4.0</a>)</p>
+<p>Note the share-alike (SA) term: derivative datasets must also carry CC BY-NC-SA 4.0.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=3"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Dataset-README">Dataset README<a class="anchor-link" href="#Dataset-README">¶</a></h2><p>A verbatim copy of the dataset README is vendored in this folder as <code>dataverse_README.md</code>. It covers file organization, the 12 pose keypoints, the HDF5 structure, and all metadata fields.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=4">
+<div class="input">
+<div class="prompt input_prompt">In [1]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Why: display the vendored dataset README verbatim rather than</span>
+<span class="c1"># re-summarizing it, so it stays exactly in sync with the source.</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">IPython.display</span><span class="w"> </span><span class="kn">import</span> <span class="n">Markdown</span><span class="p">,</span> <span class="n">display</span>
+
+<span class="c1"># The README is co-located with this notebook in student_notebooks/deep_dives/</span>
+<span class="n">readme_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s1">'dataverse_README.md'</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">(),</span> <span class="o">*</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span><span class="o">.</span><span class="n">parents</span><span class="p">]:</span>
+    <span class="n">candidate</span> <span class="o">=</span> <span class="n">p</span> <span class="o">/</span> <span class="s1">'student_notebooks'</span> <span class="o">/</span> <span class="s1">'deep_dives'</span> <span class="o">/</span> <span class="s1">'dataverse_README.md'</span>
+    <span class="k">if</span> <span class="n">candidate</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="n">readme_path</span> <span class="o">=</span> <span class="n">candidate</span>
+        <span class="k">break</span>
+
+<span class="k">if</span> <span class="n">readme_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+    <span class="n">display</span><span class="p">(</span><span class="n">Markdown</span><span class="p">(</span><span class="n">readme_path</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span><span class="p">)))</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">'README not found at '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">readme_path</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_markdown rendered_html output_subarea">
+<!--
+PROVENANCE / ATTRIBUTION
+========================
+This file is a verbatim copy of the README.md distributed with the source dataset,
+vendored into this repository for offline reference and version stability.
+
+Citation:
+  Kumar, Vivek; Brian Geuther; Sean Deats, 2024,
+  "The Jackson Laboratory (JAX) - Kumar Lab Mouse Strain Survey of Behavior
+  in the Open Field Arena (Video Dataset)",
+  https://doi.org/10.7910/DVN/SAPNJG, Harvard Dataverse, V1; README.md
+
+License: CC BY-NC-SA 4.0 (http://creativecommons.org/licenses/by-nc-sa/4.0)
+Retrieved from Harvard Dataverse datafile id 10174762.
+
+Only this provenance header has been added; the dataset README content below
+is unchanged from the source.
+-->
+<h1 id="Organization-of-Data">Organization of Data<a class="anchor-link" href="#Organization-of-Data">¶</a></h1><p>The data is organized in folders. Each video file <code>[video_file].mp4</code> also has pose prediction files <code>[video_file]_pose_est_v6.h5</code>.</p>
+<p>Each video is 99150 frames long and imaged at 30fps, or the equivalent of 55m and 5s. The first 150 frames (5 seconds) of the video are approximately when the mice are placed into the arena. The remaining 55 minutes of video are the data used in publications.</p>
+<p>The metadata associated with each video is contained within <code>	 OFA_Release_ExperimentMetadata.csv</code> where the row providing the metadata points to the video using the <code>NetworkFilename</code>. For convenience, the <code>pose_file</code> column also points to the associated pose file.</p>
+<h1 id="Description-of-Metadata-Fields">Description of Metadata Fields<a class="anchor-link" href="#Description-of-Metadata-Fields">¶</a></h1><ul>
+<li>NetworkFilename: Video file associated with this row.</li>
+<li>pose_file: Pose file associated with this row.</li>
+<li>Strain: Strain code of the animal.</li>
+<li>Sex: Sex of the animal. M = Male. F = Female.</li>
+<li>Cage: Housing identifier of the animal. Same values indicate the animals were housed together. This does not necessarily indicate all the animals in the home cage.</li>
+<li>DOB: Date of birth of the animal, +/- 3 days.</li>
+<li>Box: Testing arena the animal was placed in.</li>
+<li>Test Date: Date of the experiment</li>
+<li>Weight: Measured body weight in grams of the animal 30 minutes before the experiment.</li>
+<li>TestTime: Approximate start time of the experiment. Time indicates when the experimenter began placing mice into their testing arenas.</li>
+<li>Tester: Person placing the animal into the arena.</li>
+<li>RoomOrigin: Room in which the mouse originated. These are all JAX breeding colony rooms except B2B, which is the Kumar Lab colony room.</li>
+<li>ShipDate: If the mouse was produced in a JAX breeding colony room, the date which the mouse was moved to B2B. Empty if the mouse was bred in B2B.</li>
+<li>LightIntensity: Approximate light intensity in lux measured at the middle of the floor of the arena. Light measurements were taken approximately every 6 months. Value indicates the most recent measurement.</li>
+<li>in_groom_dataset: Was this animal included in the grooming paper dataset?</li>
+<li>in_gait_dataset: Was this animal included in the gait paper (stride-level analysis) dataset?</li>
+<li>in_mass_dataset: Was this animal included in the visual mouse mass dataset?</li>
+<li>in_jabs600_v1_dataset: Was this animal included in the first version of the JABS600 dataset?</li>
+<li>in_jabs1200_v1_dataset: Was this animal included in the first version of the JABS1200 dataset?</li>
+<li>in_jabs600_v2_dataset: Was this animal included in the second version of the JABS600 dataset?</li>
+<li>in_jabs1200_v2_dataset: Was this animal included in the second version of the JABS1200 dataset?</li>
+<li>first_frame_pose: First frame where any keypoint was predicted.</li>
+<li>first_frame_full_pose: First frame with all 12 keypoints</li>
+<li>first_frame_seg: First frame where segmentation data was assigned an id</li>
+<li>pose_counts: Total number of poses with any keypoints predicted</li>
+<li>seg_counts: Total number of segmentations matched with poses</li>
+<li>early_poses: Number of pose predictions in the first 150 frames of the video</li>
+<li>early_segs: Number of segmentation matched with poses in the first 150 frames of the video</li>
+<li>missing_poses: Missing poses in the primary duration  (55 minutes of experiment)</li>
+<li>missing_segs: Missing segmentations in the primary duration  (55 minutes of experiment)</li>
+<li>pose_tracklets: Number of tracklets in the primary duration (55 minutes of experiment). Tracklet are contiguous segments of time.</li>
+<li>missing_keypoint_frames: Number of frames which don't contain all 12 keypoints in the primary duration (55 minutes of experiment)</li>
+<li>missing_arena_corners: Were the arena corners not predicted?</li>
+</ul>
+<h1 id="Description-of-Pose-File-Contents">Description of Pose File Contents<a class="anchor-link" href="#Description-of-Pose-File-Contents">¶</a></h1><p>Pose files contain predictions from deep learning models from the Kumar Lab group.
+The arena corner model may not always predict corners that make sense. When this occurs, no arena corner data is written and a default value (average value across 100 manual measurements) for the <code>cm_per_pixel</code> conversion is provided.</p>
+<h2 id="Data-Description">Data Description<a class="anchor-link" href="#Data-Description">¶</a></h2><ul>
+<li><code>poseest/confidence</code>: peak value that the pose estimation model predicted per keypoint. Shape is <code>[frame, animal, keypoint]</code>.</li>
+<li><code>poseest/id_mask</code>: unused for single mice</li>
+<li><code>poseest/identity_embeds</code>: unused for single mice</li>
+<li><code>poseest/instance_count</code>: number of valid poses along the <code>animal</code> dimension in <code>poseest/points</code>. Shape is <code>[frame]</code></li>
+<li><code>poseest/instance_embed_id</code>: resolved identity for the keypoint data for the entire video. Trivial for single mouse (always 1). Shape is <code>[frame, animal]</code>.</li>
+<li><code>poseest/instance_embedding</code>: unused for single mice</li>
+<li><code>poseest/instance_id_center</code>: unused for single mice</li>
+<li><code>poseest/instance_seg_id</code>: tracklet id assigned to segmentation data. Shape is <code>[frame, animal]</code>.</li>
+<li><code>poseest/instance_track_id</code>: tracklet id assigned to keypoint data. Shape is <code>[frame, animal]</code>.</li>
+<li><code>poseest/longterm_seg_id</code>: resolved identity for the segmentation data for the entire video. Trivial for single mouse (always 1). Shape is <code>[frame, animal]</code>.</li>
+<li><code>poseest/points</code>: location for individual keypoints. Shape is <code>[frame, animal, keypoint, position]</code>. Keypoint position is sorted <code>[y, x]</code>.</li>
+<li><code>poseest/seg_data</code>: compressed segmentation data. Data is stored as a padded matrix of contours. Pad value is <code>-1</code> (invalid value for contours). Shape is <code>[frame, animal, contour, contour_length, position]</code>. Segmentation position is sorted <code>[x, y]</code>.</li>
+<li><code>poseest/seg_external_flag</code>: describes whether a contour is an external (1) or internal (0) contour. Shape is <code>[frame, animal, contour]</code>.</li>
+<li><code>static_objects/corners</code>: Predicted corner locations of the arena floor. Shape is <code>[corner_index, position]</code>. Arena corner positions are sorted <code>[x, y]</code>.</li>
+</ul>
+<h3 id="Attributes">Attributes<a class="anchor-link" href="#Attributes">¶</a></h3><ul>
+<li><code>poseest</code> -&gt; <code>cm_per_pixel</code>: coefficient to convert pixels to cm.</li>
+<li><code>poseest</code> -&gt; <code>cm_per_pixel_source</code>: origin of <code>cm_per_pixel</code> value.</li>
+<li><code>poseest</code> -&gt; <code>version</code>: version of the pose file. Always 6.0.</li>
+</ul>
+<p>Each pose file also stores the model used in generating the predictions. The same set of models have been used for this entire release of this dataset.</p>
+<ul>
+<li><code>poseest/points</code> -&gt; <code>config</code>: string describing pose model configuration</li>
+<li><code>poseest/points</code> -&gt; <code>model</code>: string describing the configuration that produced the trained model</li>
+<li><code>poseest/seg_data</code> -&gt; <code>config</code>: string describing segmentation model configuration</li>
+<li><code>poseest/seg_data</code> -&gt; <code>model</code>: string describing the checkpoint used from training</li>
+<li><code>static_objects/corners</code> -&gt; <code>config</code>: string describing the arena corner model configuration</li>
+<li><code>static_objects/corners</code> -&gt; <code>config</code>: string describing the checkpoint used from training</li>
+</ul>
+<h3 id="Shape-Description">Shape Description<a class="anchor-link" href="#Shape-Description">¶</a></h3><ul>
+<li><code>frame</code>: index of the frame of the video</li>
+<li><code>animal</code>: index of the animal. Since this dataset is always 1-animal, this dimension is always 1</li>
+<li><code>keypoint</code>: index of the keypoint. Keypoints are sorted:</li>
+<li>0: Nose</li>
+<li>1: Left Ear</li>
+<li>2: Right Ear</li>
+<li>3: Base Neck</li>
+<li>4: Left Front Paw</li>
+<li>5: Right Front Paw</li>
+<li>6: Center Spine</li>
+<li>7: Left Rear Paw</li>
+<li>8: Right Rear Paw</li>
+<li>9: Base Tail</li>
+<li>10: Mid Tail</li>
+<li>11: Tail Tip</li>
+<li><code>position</code>: axis of length 2 for either <code>[x, y]</code> or <code>[y, x]</code> values pointing to the image pixels.</li>
+<li><code>contour</code>: contour index when multiple contours are needed to describe a segmentation mask.</li>
+<li><code>contour_length</code>: point index in the contour. Contours are a list of keypoints. This is that "list" dimension. Contours are compressed using opencv's <code>CHAIN_APPROX_SIMPLE</code> compression.</li>
+<li><code>corner_index</code>: index of for each of the 4 corners.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=5"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Downloading-the-Full-Dataset">Downloading the Full Dataset<a class="anchor-link" href="#Downloading-the-Full-Dataset">¶</a></h2><p>The full video and pose dataset is large and not committed to the repo. The Data Ingestion page handles downloading a working sample from the Zenodo deposit.</p>
+<p>To download the full Dataverse dataset (videos + pose files for all strains and sessions), use the <code>student_scripts/download_dataverse.py</code> script - see its docstring for usage.</p>
+</div>
+</div>
+</div>
+
+      </div>
+    </section>
+
+    <div class="page-footer">
+      <span><a href="https://www.kumarlab.org/">Kumar Lab</a> &middot; <a href="https://www.jax.org/">The Jackson Laboratory</a> &middot; <a href="https://www.jax.org/education-and-learning/education-calendar/2026/10-october/machine-learning-for-automated-quantification-of-behavior-short-course">Short Course on the Application of Machine Learning for Automated Quantification of Behavior</a></span>
+      <span>Oct 11&ndash;16, 2026</span>
+    </div>
+
+  </div>
+</div>
+
+<script src="_shared/site.js"></script>
+<script>
+  JabsSite.initSidebarToggle();
+  JabsSite.initScrollToTop();
+</script>
+
+</body>
+</html>
