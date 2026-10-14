@@ -51,7 +51,7 @@ def download() -> bool:
     """
     print("[INFO] Downloading the Zenodo grooming dataset (~110 MB) ...")
     result = subprocess.run([sys.executable, str(HERE / "download_zenodo.py"),
-                             "--files", "jabs_grooming.zip", "--extract"])
+                             "--files", "jabs_grooming.zip", "--extract"], check=False)
     return result.returncode == 0 and have_pose(SOURCE)
 
 
@@ -75,7 +75,7 @@ def main() -> int:
         else:
             print("[INFO] Checking cached features for the practice set ...", flush=True)
             cache_features(PRACTICE_SET)   # returns at once when they are all cached
-    except (SystemExit, Exception) as err:  # a build problem must not stop the launcher
+    except (SystemExit, Exception) as err:  # noqa: BLE001 - a build problem must not stop the launcher
         print(f"[WARN] Practice-set build failed ({err}).")
         return 1
     print("[OK] Course data ready.")

@@ -113,7 +113,7 @@ def init_project(project: Path) -> bool:
     try:
         result = subprocess.run([jabs_exe("jabs-init"), "--skip-feature-generation", "-w", str(WINDOW_SIZE),
                                  str(project)], env=env, capture_output=True, text=True,
-                                encoding="utf-8", errors="replace")
+                                encoding="utf-8", errors="replace", check=False)
     except OSError as err:
         print(f"  jabs-init could not be started ({err}).")
         return False
@@ -194,7 +194,7 @@ def cache_behavior_features(project: Path) -> bool:
                     print(f"    {finished}/{len(stems)} {futures[future]}", flush=True)
                 except BrokenProcessPool:
                     raise
-                except Exception as err:  # one bad video must not stop the others
+                except Exception as err:  # noqa: BLE001 - one bad video must not stop the others
                     ok = False
                     print(f"  features for {futures[future]} failed ({err}); JABS will compute them on first Train.", flush=True)
     except BrokenProcessPool:
@@ -205,7 +205,7 @@ def cache_behavior_features(project: Path) -> bool:
                 _cache_one_video((str(project), stem))
                 finished += 1
                 print(f"    {finished}/{len(stems)} {stem}", flush=True)
-            except Exception as err:
+            except Exception as err:  # noqa: BLE001 - one bad video must not stop the others
                 ok = False
                 print(f"  features for {stem} failed ({err}); JABS will compute them on first Train.", flush=True)
     if ok:

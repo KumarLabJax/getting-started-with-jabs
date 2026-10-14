@@ -23,4 +23,4 @@ jobs:
         # and Args/Returns sections must be complete. Notebooks are excluded.
         run: |
           ruff check --select D --config "lint.pydocstyle.convention = 'google'" \
-            --extend-exclude "*.ipynb" student_scripts developer references
+            --extend-exclude "*.ipynb" student_scripts developer
